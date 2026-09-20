@@ -1,159 +1,353 @@
+# Copyright (c) 2026 e-Yantra, IIT Bombay. All rights reserved.
+# These simulation files and source code are the intellectual property of e-Yantra,
+# IIT Bombay, provided solely for eYRC 2026-27 (Theme: Hola The Explorer).
+# Sharing or redistribution of this material, in whole or in part, is not permitted.
+
 #!/usr/bin/env python3
+'''
+*****************************************************************************************
+*
+*        =============================================
+*           Hola The Explorer (HE) Theme (eYRC 2025-26)
+*        =============================================
+*
+*  This script is to implement Task 1A of Hola The Explorer (HE) Theme (eYRC 2025-26).
+*
+*****************************************************************************************
+'''
 
-"""
-Task 1A - Camera Detection
-Detects 3 trapezoid checkpoints (cyan, green, orange) from the overhead camera
-and produces a 1280x720 binary mask with only their outlines.
-"""
+# Team ID:          [ Team-ID ]
+# Author List:      [ Names of team members who worked on this file, separated by comma ]
+# Filename:         camera_detection.py
+# Functions:        centre_of_quad(), find_trapezoids(), main()
+# Global variables: STREAM_URL, WINDOW, BINARY_WINDOW, FPS_WINDOW, ARENA_*, SAND_DISTANCE,
+#                   HOUGH_*, MIN_TRAPEZOID_AREA, PARALLEL_TOLERANCE_DEG, REPORT_PERIOD_SEC
+# Service Clients:  pixel_to_world  ->  shape_interface/srv/PixelToWorld
 
-import rclpy
-from rclpy.node import Node
+
+import math
+import time
+from collections import deque
+
 import cv2
 import numpy as np
+import rclpy
+from rclpy.node import Node
+from shape_interface.srv import PixelToWorld
+
+###############################################################
+
+################# ADD EXTRA IMPORTS / GLOBALS HERE ############
 
 
-class CameraDetection(Node):
-    def __init__(self):
-        super().__init__('camera_detection')
 
-        # ============ CAPTURE FRAME ============
-        cap = cv2.VideoCapture("http://127.0.0.1:8080/stream")
-        ret, frame = cap.read()
-        cap.release()
+###############################################################
 
-        if not ret:
-            self.get_logger().error("Failed to grab frame from camera stream")
-            return
 
-        self.get_logger().info(f"Frame captured: {frame.shape}")
+##################### TUNABLE CONSTANTS #######################
+STREAM_URL = "http://127.0.0.1:8080/stream"
+WINDOW = "camera_feed"
+BINARY_WINDOW = "trapezoid_borders"
+FPS_WINDOW = 30
 
-        # ============ YOUR CODE STARTS HERE ============
+ARENA_X0, ARENA_Y0, ARENA_X1, ARENA_Y1 = 304, 24, 975, 695
 
-        # Convert BGR to HSV for color-based filtering
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+SAND_DISTANCE = 18
 
-        # --- Define HSV ranges for the 3 trapezoid colors ---
-        # Cyan trapezoid
-        cyan_lower = np.array([80, 50, 50])
-        cyan_upper = np.array([100, 255, 255])
+HOUGH_THRESHOLD = 40
+HOUGH_MIN_LENGTH = 35
+HOUGH_MAX_GAP = 25
 
-        # Green trapezoid
-        green_lower = np.array([35, 50, 50])
-        green_upper = np.array([80, 255, 255])
+MIN_TRAPEZOID_AREA = 1200
+PARALLEL_TOLERANCE_DEG = 7
 
-        # Orange trapezoid
-        orange_lower = np.array([10, 100, 100])
-        orange_upper = np.array([25, 255, 255])
+REPORT_PERIOD_SEC = 0.5
 
-        # Create color masks
-        mask_cyan = cv2.inRange(hsv, cyan_lower, cyan_upper)
-        mask_green = cv2.inRange(hsv, green_lower, green_upper)
-        mask_orange = cv2.inRange(hsv, orange_lower, orange_upper)
+###############################################################
 
-        # Combine all color masks
-        combined_mask = mask_cyan | mask_green | mask_orange
 
-        # --- Crop to arena floor only (avoid outside terrain) ---
-        # Arena floor approximate pixel bounds: x=384-975, y=24-695
-        arena_mask = np.zeros_like(combined_mask)
-        arena_mask[24:695, 384:975] = 255
-        combined_mask = cv2.bitwise_and(combined_mask, arena_mask)
+##############################################################
+def centre_of_quad(corners):
+    """
+    Purpose:
+    ---
+    Find the centre of a quadrilateral given its four corners.
 
-        # --- Morphological cleanup ---
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-        combined_mask = cv2.morphologyEx(combined_mask, cv2.MORPH_CLOSE, kernel)
-        combined_mask = cv2.morphologyEx(combined_mask, cv2.MORPH_OPEN, kernel)
+    Input Arguments:
+    ---
+    `corners` :  [ numpy array of shape (4, 2), dtype float ]
 
-        # --- Find contours ---
-        contours, _ = cv2.findContours(
-            combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
+    Returns:
+    ---
+    `cx` :  [ float ]  x coordinate of the centre, in pixels
+    `cy` :  [ float ]  y coordinate of the centre, in pixels
 
-        # --- Filter for trapezoids ---
-        # A trapezoid has 4 vertices and exactly ONE pair of parallel sides
-        # (rectangles have TWO pairs of parallel sides)
-        trapezoid_contours = []
+    Example call:
+    ---
+    cx, cy = centre_of_quad(corners)
+    """
 
-        for cnt in contours:
-            area = cv2.contourArea(cnt)
-            if area < 500:
-                continue
+    cx, cy = 0.0, 0.0
 
-            peri = cv2.arcLength(cnt, True)
-            approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
+    ##############  ADD YOUR CODE HERE  ##############
 
-            if len(approx) == 4:
-                pts = approx.reshape(4, 2)
+    contour = corners.reshape((-1, 1, 2)).astype(np.float32)
+    M = cv2.moments(contour)
+    if abs(M["m00"]) > 1e-6:
+        cx = M["m10"] / M["m00"]
+        cy = M["m01"] / M["m00"]
+    else:
+        cx = float(np.mean(corners[:, 0]))
+        cy = float(np.mean(corners[:, 1]))
 
-                if self.is_trapezoid(pts):
-                    trapezoid_contours.append(approx)
+    ##################################################
 
-        self.get_logger().info(f"Trapezoids found: {len(trapezoid_contours)}")
+    return cx, cy
 
-        # --- Draw outlines on blank canvas ---
-        binary_output = np.zeros((720, 1280), dtype=np.uint8)
 
-        for cnt in trapezoid_contours:
-            cv2.drawContours(binary_output, [cnt], -1, 255, 2)
+##############################################################
+def find_trapezoids(frame):
+    """
+    Purpose:
+    ---
+    Locate the three station funnels (trapezoids) in one camera frame.
 
-        # --- Ensure truly binary (0 or 255 only) ---
-        _, binary_output = cv2.threshold(binary_output, 127, 255, cv2.THRESH_BINARY)
+    Input Arguments:
+    ---
+    `frame` :  [ numpy array ]
+        one BGR frame straight from the camera stream
 
-        # ============ YOUR CODE ENDS HERE ============
+    Returns:
+    ---
+    `binary` :  [ numpy array, uint8, same height/width as `frame` ]
+    `trapezoids` :  [ list of tuples ]
 
-        # Save the binary mask
-        cv2.imwrite("binary.png", binary_output)
-        self.get_logger().info("binary.png saved successfully")
+    Example call:
+    ---
+    binary, trapezoids = find_trapezoids(frame)
+    """
 
-        # Verification
-        self.get_logger().info(f"Shape: {binary_output.shape}")
-        self.get_logger().info(f"Unique values: {np.unique(binary_output)}")
+    binary = np.zeros(frame.shape[:2], np.uint8)
+    trapezoids = []
 
-        verify_contours, _ = cv2.findContours(
-            binary_output, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
-        self.get_logger().info(f"Contours in output: {len(verify_contours)}")
+    ##############  ADD YOUR CODE HERE  ##############
 
-    def is_trapezoid(self, pts):
-        """
-        Check if a 4-point polygon is a trapezoid (exactly 1 pair of parallel sides)
-        and NOT a rectangle (which has 2 pairs of parallel sides).
-        """
-        parallel_count = 0
+    # ----- STEP 1: CROP to arena rectangle -----
+    crop = frame[ARENA_Y0:ARENA_Y1, ARENA_X0:ARENA_X1].copy()
+    h_crop, w_crop = crop.shape[:2]
 
-        sides = []
+    # ----- STEP 2: BUILD MASK of "not floor" using LAB distance -----
+    lab = cv2.cvtColor(crop, cv2.COLOR_BGR2LAB)
+
+    floor_color = np.zeros(3, dtype=np.float64)
+    for ch in range(3):
+        channel = lab[:, :, ch].ravel()
+        counts = np.bincount(channel, minlength=256)
+        floor_color[ch] = float(np.argmax(counts))
+
+    lab_f = lab.astype(np.float64)
+    diff = lab_f - floor_color[np.newaxis, np.newaxis, :]
+    dist = np.sqrt(np.sum(diff * diff, axis=2))
+
+    mask = np.zeros((h_crop, w_crop), dtype=np.uint8)
+    mask[dist > SAND_DISTANCE] = 255
+
+    # ----- STEP 3: MORPHOLOGICAL CLOSING to join thin borders -----
+    kernel_close = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel_close)
+
+    # ----- STEP 4: CANNY EDGES + HOUGH LINE SEGMENTS -----
+    edges = cv2.Canny(mask, 50, 150)
+    lines = cv2.HoughLinesP(
+        edges,
+        rho=1,
+        theta=np.pi / 180,
+        threshold=HOUGH_THRESHOLD,
+        minLineLength=HOUGH_MIN_LENGTH,
+        maxLineGap=HOUGH_MAX_GAP,
+    )
+
+    if lines is None:
+        return binary, trapezoids
+
+    # ----- STEP 5: DRAW segments onto scratch image -----
+    scratch = np.zeros((h_crop, w_crop), dtype=np.uint8)
+    for line in lines:
+        x1, y1, x2, y2 = line[0]
+        cv2.line(scratch, (x1, y1), (x2, y2), 255, 3)
+
+    kernel_close2 = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    scratch = cv2.morphologyEx(scratch, cv2.MORPH_CLOSE, kernel_close2)
+
+    # ----- STEP 6: FIND CONTOURS (RETR_CCOMP) — keep inner contours (holes) -----
+    contours, hierarchy = cv2.findContours(scratch, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+
+    if hierarchy is None:
+        return binary, trapezoids
+
+    candidate_contours = []
+    for i, cnt in enumerate(contours):
+        parent = hierarchy[0][i][3]
+        if parent == -1:
+            continue
+        area = cv2.contourArea(cnt)
+        if area < MIN_TRAPEZOID_AREA:
+            continue
+        candidate_contours.append(cnt)
+
+    # ----- STEP 7: APPROXIMATE to polygon, keep convex 4-vertex shapes -----
+    quad_contours = []
+    for cnt in candidate_contours:
+        peri = cv2.arcLength(cnt, True)
+        approx = cv2.approxPolyDP(cnt, 0.03 * peri, True)
+        if len(approx) == 4 and cv2.isContourConvex(approx):
+            quad_contours.append(approx)
+
+    # ----- STEP 8: REJECT non-trapezoids (need exactly 1 parallel pair) -----
+    def angle_of_segment(p1, p2):
+        dx = float(p2[0] - p1[0])
+        dy = float(p2[1] - p1[1])
+        return math.degrees(math.atan2(dy, dx)) % 180.0
+
+    def angles_parallel(a1, a2, tol):
+        diff = abs(a1 - a2) % 180.0
+        if diff > 90.0:
+            diff = 180.0 - diff
+        return diff < tol
+
+    accepted = []
+    for quad in quad_contours:
+        pts = quad.reshape(4, 2)
+
+        angles = []
         for i in range(4):
             p1 = pts[i]
             p2 = pts[(i + 1) % 4]
-            dx = float(p2[0] - p1[0])
-            dy = float(p2[1] - p1[1])
-            sides.append((dx, dy))
+            angles.append(angle_of_segment(p1, p2))
 
-        # Check opposite side pairs: (0,2) and (1,3)
-        for i in range(2):
-            dx1, dy1 = sides[i]
-            dx2, dy2 = sides[i + 2]
+        parallel_pairs = 0
+        # opposite side pairs: (side0, side2) and (side1, side3)
+        if angles_parallel(angles[0], angles[2], PARALLEL_TOLERANCE_DEG):
+            parallel_pairs += 1
+        if angles_parallel(angles[1], angles[3], PARALLEL_TOLERANCE_DEG):
+            parallel_pairs += 1
 
-            # Two lines are parallel if their cross product is ~0
-            cross = abs(dx1 * dy2 - dy1 * dx2)
-            len1 = np.sqrt(dx1**2 + dy1**2)
-            len2 = np.sqrt(dx2**2 + dy2**2)
+        if parallel_pairs == 1:
+            accepted.append(pts)
 
-            if len1 > 0 and len2 > 0:
-                sin_angle = cross / (len1 * len2)
-                if sin_angle < 0.15:
-                    parallel_count += 1
+    # ----- STEP 9: SHIFT back to full-frame coordinates + get centre -----
+    for pts in accepted:
+        full_pts = pts.astype(np.float64)
+        full_pts[:, 0] += ARENA_X0
+        full_pts[:, 1] += ARENA_Y0
 
-        # Trapezoid = exactly 1 pair parallel, Rectangle = 2 pairs
-        return parallel_count == 1
+        cx, cy = centre_of_quad(full_pts)
+        trapezoids.append((cx, cy, full_pts))
+
+    # ----- STEP 10: BUILD BINARY IMAGE with accepted trapezoid borders -----
+    for cx, cy, corners in trapezoids:
+        pts_int = np.round(corners).astype(np.int32)
+        cv2.polylines(binary, [pts_int], isClosed=True, color=255, thickness=2)
+
+    ##################################################
+
+    return binary, trapezoids
 
 
-def main(args=None):
-    rclpy.init(args=args)
-    node = CameraDetection()
+##############################################################
+def main():
+    """
+    Purpose:
+    ---
+    Open the camera stream, run find_trapezoids() on every frame, display the
+    result, and periodically convert each trapezoid centre to world
+    coordinates through the `pixel_to_world` service.
+    """
+
+    rclpy.init()
+    node = Node("camera_feed")
+    client = node.create_client(PixelToWorld, "pixel_to_world")
+
+    node.get_logger().info("waiting for the pixel_to_world service ...")
+    if not client.wait_for_service(timeout_sec=10.0):
+        node.get_logger().error(
+            "pixel_to_world is not up. Start it first: ros2 run task_1a pixel_to_world_service")
+        rclpy.shutdown()
+        return
+
+    cap = cv2.VideoCapture(STREAM_URL)
+    if not cap.isOpened():
+        node.get_logger().error(f"could not open {STREAM_URL}")
+        node.get_logger().error(
+            "start the simulation first: ros2 launch hb_description task1a.launch.py")
+        rclpy.shutdown()
+        return
+
+    stamps = deque(maxlen=FPS_WINDOW)
+    fps = 0.0
+    last_report = 0.0
+
+    while rclpy.ok():
+        ok, frame = cap.read()
+        if not ok:
+            break
+
+        stamps.append(time.monotonic())
+        if len(stamps) >= 2:
+            span = stamps[-1] - stamps[0]
+            fps = (len(stamps) - 1) / span if span > 0 else 0.0
+
+        binary, trapezoids = find_trapezoids(frame)
+
+        for cx, cy, corners in trapezoids:
+            cv2.polylines(frame, [np.round(corners).astype(np.int32)], True, (0, 0, 255), 2)
+            cv2.circle(frame, (int(round(cx)), int(round(cy))), 6, (0, 255, 255), -1)
+
+        cv2.putText(frame, f"{fps:5.1f} FPS", (12, 34), cv2.FONT_HERSHEY_SIMPLEX,
+                    1.0, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.putText(frame, f"{len(trapezoids)} trapezoids", (12, 68),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
+        cv2.imshow(WINDOW, frame)
+        cv2.imshow(BINARY_WINDOW, binary)
+
+        now = time.monotonic()
+        if trapezoids and now - last_report >= REPORT_PERIOD_SEC:
+            last_report = now
+            print(f"\n{len(trapezoids)} trapezoid(s):")
+
+            for cx, cy, _ in sorted(trapezoids, key=lambda t: (t[1], t[0])):
+
+                ##############  ADD YOUR CODE HERE  ##############
+
+                req = PixelToWorld.Request()
+                req.pixel_x = float(cx)
+                req.pixel_y = float(cy)
+
+                future = client.call_async(req)
+                rclpy.spin_until_future_complete(node, future, timeout_sec=1.0)
+
+                result = future.result()
+                if result is None:
+                    print(f"  pixel ({cx:7.2f}, {cy:7.2f})  ->  service call timed out")
+                elif not result.success:
+                    print(f"  pixel ({cx:7.2f}, {cy:7.2f})  ->  {result.message}")
+                else:
+                    wx = result.world_x
+                    wy = result.world_y
+                    print(f"  pixel ({cx:7.2f}, {cy:7.2f})  ->  "
+                          f"world ({wx:6.3f}, {wy:6.3f}) m")
+
+                ##################################################
+
+        if (cv2.waitKey(1) & 0xFF) == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
     node.destroy_node()
     rclpy.shutdown()
 
 
-if __name__ == '__main__':
+##############################################################
+if __name__ == "__main__":
     main()
