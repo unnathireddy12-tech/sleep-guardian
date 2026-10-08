@@ -1,19 +1,22 @@
 """
 Sleep Guardian — Main Pipeline
 ================================
-Wires all 7 DSA modules together into a working system.
+Wires all DSA modules together into a working system.
 
 Data Flow:
-    Sensors → Circular Buffers → Analysis (sliding window, peak finder, state machine)
-            → Signal Correlator → Priority Queue → Event Log → Morning Summary
+    Sensors → Circular Buffers → Analysis (sliding window, peak finder,
+              sound classifier, state machine)
+            → Signal Correlator → Priority Queue → Event Log
+            → Morning Summary + Dashboard JSON
 
 This file simulates a full night of sleep data to demonstrate the pipeline.
 On real hardware, the simulate_sensor_reading() function gets replaced
 with actual serial reads from Arduino/ESP32.
 """
 
+import json
+import math
 import random
-import time
 
 from dsa.circular_buffer import CircularBuffer
 from dsa.sliding_window import classify_movement, restlessness_percentage
@@ -22,6 +25,7 @@ from dsa.signal_correlator import SignalCorrelator
 from dsa.event_log import EventLog
 from dsa.peak_finder import detect_snoring, compute_baseline
 from dsa.state_machine import SleepPositionStateMachine
+from dsa.sound_classifier import SoundClassifier
 
 
 # ===================================================================
@@ -45,6 +49,9 @@ event_log = EventLog()
 # State Machine — tracks sleep position transitions (Task 7)
 position_tracker = SleepPositionStateMachine()
 
+# Sound Classifier — differentiates snoring vs sleep talking (Task 8)
+sound_classifier = SoundClassifier()
+
 
 # ===================================================================
 # 2. SENSOR SIMULATION (replace with real serial reads on hardware)
@@ -53,30 +60,48 @@ position_tracker = SleepPositionStateMachine()
 def simulate_sensor_reading(timestamp):
     """
     Simulate one second of sensor data.
-    On real hardware, this reads from serial port:
-        import serial
-        ser = serial.Serial('/dev/ttyUSB0', 9600)
-        line = ser.readline().decode().strip()
-        sound, pressure, ax, ay, az = map(float, line.split(','))
+    Generates realistic patterns that let the classifier differentiate
+    snoring (periodic short bursts, stable amplitude) from
+    sleep talking (longer irregular bursts, varying amplitude).
     """
-    # simulate different sleep phases
-    phase = timestamp % 3600  # cycle every hour
+    phase = timestamp % 600  # cycle every 10 minutes for demo
 
-    # back sleeping with snoring (first 20 min of each hour)
-    if phase < 1200:
-        sound = random.uniform(55, 80) if random.random() > 0.3 else random.uniform(25, 40)
+    # Phase 1: Snoring on back (0-3 min)
+    # Pattern: 2s loud → 3s quiet → repeat (periodic, short bursts)
+    if phase < 180:
+        cycle_pos = phase % 5  # 5-second cycle
+        if cycle_pos < 2:
+            # snore burst: consistent amplitude (low variation = low ZCR)
+            sound = random.uniform(65, 75)
+        else:
+            sound = random.uniform(25, 35)
         pressure = random.uniform(500, 700)
         position = "back"
-        movement = random.uniform(0.5, 3.0)
+        movement = random.uniform(0.5, 2.0)
 
-    # side sleeping, quiet (middle 20 min)
-    elif phase < 2400:
-        sound = random.uniform(20, 40)
+    # Phase 2: Sleep talking on side (3-5 min)
+    # Pattern: 5-8s talking → 3-5s silence (longer, irregular bursts)
+    elif phase < 300:
+        talk_offset = (phase - 180) % 13  # ~13 second cycle
+        if talk_offset < 7:
+            # talking burst: highly varied amplitude (high ZCR)
+            base = random.uniform(50, 70)
+            variation = random.uniform(-20, 20)
+            sound = max(20, base + variation)
+        else:
+            sound = random.uniform(20, 35)
+        pressure = random.uniform(480, 680)
+        position = "side_left"
+        movement = random.uniform(0.5, 2.5)
+
+    # Phase 3: Quiet side sleeping (5-8 min)
+    elif phase < 480:
+        sound = random.uniform(20, 38)
         pressure = random.uniform(450, 650)
-        position = "side_left" if phase < 1800 else "side_right"
+        position = "side_right" if phase > 420 else "side_left"
         movement = random.uniform(0.3, 2.0)
 
-    # restless period (last 20 min)
+    # Phase 4: Restless period (8-10 min)
     else:
         sound = random.uniform(30, 50)
         pressure = random.uniform(400, 700)
@@ -98,9 +123,6 @@ def simulate_sensor_reading(timestamp):
 def process_reading(timestamp, reading):
     """
     Process a single sensor reading through the full DSA pipeline.
-
-    Pipeline:
-        Raw data → Buffers → Analysis → Correlation → Priority → Log
     """
     actions_taken = []
 
@@ -119,51 +141,54 @@ def process_reading(timestamp, reading):
         event_log.append(timestamp, "position_change", result["reason"])
         actions_taken.append(f"Position: {result['reason']}")
 
-    # --- Step 4: Snoring detection via peak finding (Task 6) ---
-    # Run every 30 seconds when we have enough data
+    # --- Step 4: Sound classification every 30 seconds (Task 8) ---
     if timestamp % 30 == 0 and len(sound_buffer) >= 30:
         sound_data = sound_buffer.get_latest(30)
         baseline = compute_baseline(sound_data)
         threshold = baseline + 20
 
-        snoring_result = detect_snoring(
-            sound_data, threshold=threshold, min_peaks=3, max_gap=10
+        # classify sound events (snoring vs sleep talking)
+        sound_events = sound_classifier.classify_window(
+            sound_data, timestamp_start=timestamp - 30,
+            threshold=threshold, sample_rate=1, baseline=baseline
         )
 
-        if snoring_result["is_snoring"]:
-            # correlate with position before deciding action
-            correlation = correlator.correlate(timestamp)
+        for se in sound_events:
+            if se.event_type == "snoring":
+                # correlate with position
+                correlation = correlator.correlate(timestamp)
 
-            if correlation["action"] == "vibrate":
-                # HIGH priority — snoring + back sleeping
-                alert_queue.push(SleepEvent(
-                    "snoring_intervention", priority=3,
-                    timestamp=timestamp,
-                    details=correlation["reason"]
-                ))
-                event_log.append(timestamp, "snoring", correlation["reason"])
-                event_log.append(timestamp, "vibration_triggered",
-                                 "Nudge to shift position")
-                actions_taken.append(
-                    f"🔴 VIBRATE: {correlation['reason']} "
-                    f"(confidence: {snoring_result['confidence']})"
-                )
+                if correlation["action"] == "vibrate":
+                    alert_queue.push(SleepEvent(
+                        "snoring_intervention", priority=3,
+                        timestamp=timestamp,
+                        details=f"Snoring ({se.duration}s, conf={se.confidence})"
+                    ))
+                    event_log.append(timestamp, "snoring",
+                                     f"Duration: {se.duration}s, ZCR: {se.zcr}")
+                    event_log.append(timestamp, "vibration_triggered",
+                                     "Nudge to shift position")
+                    actions_taken.append(
+                        f"\U0001f534 SNORING + VIBRATE: {se.duration}s "
+                        f"(ZCR={se.zcr}, conf={se.confidence})")
+                else:
+                    event_log.append(timestamp, "snoring",
+                                     f"Duration: {se.duration}s, ZCR: {se.zcr}")
+                    actions_taken.append(
+                        f"\U0001f7e1 SNORING: {se.duration}s (ZCR={se.zcr})")
 
-            elif correlation["action"] == "alert":
-                # MEDIUM priority — snoring but not on back
+            elif se.event_type == "sleep_talking":
+                event_log.append(timestamp, "sleep_talking",
+                                 f"Duration: {se.duration}s, ZCR: {se.zcr}")
                 alert_queue.push(SleepEvent(
-                    "snoring_alert", priority=2,
+                    "sleep_talking", priority=1,
                     timestamp=timestamp,
-                    details=correlation["reason"]
+                    details=f"Sleep talking ({se.duration}s)"
                 ))
-                event_log.append(timestamp, "snoring", correlation["reason"])
-                event_log.append(timestamp, "alert_sent", correlation["reason"])
                 actions_taken.append(
-                    f"🟡 ALERT: {correlation['reason']}"
-                )
+                    f"\U0001f7e3 SLEEP TALKING: {se.duration}s (ZCR={se.zcr})")
 
     # --- Step 5: Movement analysis via sliding window (Task 2) ---
-    # Run every 60 seconds when we have enough data
     if timestamp % 60 == 0 and len(accel_buffer) >= 60:
         accel_data = accel_buffer.get_latest(60)
         classifications = classify_movement(
@@ -179,29 +204,94 @@ def process_reading(timestamp, reading):
             ))
             event_log.append(timestamp, "restless",
                              f"{restless_pct}% restless in last 60s")
-            actions_taken.append(f"🟠 RESTLESS: {restless_pct}% of last 60s")
+            actions_taken.append(f"\U0001f7e0 RESTLESS: {restless_pct}% of last 60s")
 
     # --- Step 6: Process alert queue (Task 3) ---
     while not alert_queue.is_empty():
-        event = alert_queue.pop()
-        # In real hardware: trigger vibration motor, send BLE notification, etc.
-        # Here we just acknowledge it was processed
-        pass
+        alert_queue.pop()
 
     return actions_taken
 
 
 # ===================================================================
-# 4. RUN THE SIMULATION
+# 4. GENERATE DASHBOARD DATA
+# ===================================================================
+
+def generate_dashboard_data():
+    """
+    Compile all analysis results into a JSON structure for the dashboard.
+    """
+    # sound classifier summary
+    sound_summary = sound_classifier.get_summary()
+
+    # position stats
+    pos_stats = position_tracker.get_position_stats()
+
+    # event log summary
+    log_summary = event_log.generate_summary()
+
+    # movement analysis
+    restless_pct = 0.0
+    if len(accel_buffer) >= 30:
+        accel_data = accel_buffer.get_latest()
+        classifications = classify_movement(accel_data, window_size=15, threshold=4.0)
+        restless_pct = restlessness_percentage(classifications)
+
+    # build timeline of all events for the dashboard chart
+    all_events = event_log.get_events()
+    timeline = []
+    for ts, etype, details in all_events:
+        h = int(ts // 3600)
+        m = int((ts % 3600) // 60)
+        s = int(ts % 60)
+        timeline.append({
+            "timestamp": ts,
+            "time_formatted": f"{h:02d}:{m:02d}:{s:02d}",
+            "event_type": etype,
+            "details": details,
+        })
+
+    dashboard_data = {
+        "sleep_quality": log_summary.get("quality", "N/A"),
+        "duration_minutes": log_summary.get("duration_minutes", 0),
+        "total_events": log_summary.get("total_events", 0),
+
+        "snoring": {
+            "total_events": sound_summary["snoring_count"],
+            "total_duration_seconds": sound_summary["snoring_total_seconds"],
+            "total_duration_minutes": sound_summary["snoring_total_minutes"],
+            "events": sound_summary["snoring_events"],
+        },
+
+        "sleep_talking": {
+            "total_events": sound_summary["talking_count"],
+            "total_duration_seconds": sound_summary["talking_total_seconds"],
+            "total_duration_minutes": sound_summary["talking_total_minutes"],
+            "events": sound_summary["talking_events"],
+        },
+
+        "position": {
+            "total_transitions": pos_stats["total_transitions"],
+            "current": pos_stats.get("current_position", "unknown"),
+            "breakdown": pos_stats.get("positions", {}),
+            "back_sleep_percentage": position_tracker.get_back_sleep_percentage(),
+        },
+
+        "restlessness_percentage": restless_pct,
+
+        "timeline": timeline,
+    }
+
+    return dashboard_data
+
+
+# ===================================================================
+# 5. RUN THE SIMULATION
 # ===================================================================
 
 def run_simulation(duration_seconds=300, print_interval=30):
     """
-    Simulate a sleep session.
-
-    Args:
-        duration_seconds: how long to simulate (default 5 min demo)
-        print_interval: print status every N seconds
+    Simulate a sleep session and generate dashboard data.
     """
     print("=" * 60)
     print("  Sleep Guardian — Pipeline Simulation")
@@ -212,7 +302,6 @@ def run_simulation(duration_seconds=300, print_interval=30):
         reading = simulate_sensor_reading(t)
         actions = process_reading(t, reading)
 
-        # print status at intervals
         if t % print_interval == 0 and t > 0:
             mins = t // 60
             secs = t % 60
@@ -225,17 +314,20 @@ def run_simulation(duration_seconds=300, print_interval=30):
                 print(f"         → {action}")
 
     # ===================================================================
-    # 5. MORNING SUMMARY (uses Event Log — Task 5)
+    # MORNING SUMMARY
     # ===================================================================
     print("\n" + "=" * 60)
-    print("  ☀️  Morning Sleep Summary")
+    print("  Morning Sleep Summary")
     print("=" * 60)
 
     # event log summary
     summary = event_log.generate_summary()
     print(f"\n{summary['summary']}")
 
-    # position stats from state machine
+    # sound classifier report
+    sound_classifier.print_report()
+
+    # position stats
     pos_stats = position_tracker.get_position_stats()
     print(f"\n--- Position Analysis ---")
     print(f"  Total position changes: {pos_stats['total_transitions']}")
@@ -246,9 +338,9 @@ def run_simulation(duration_seconds=300, print_interval=30):
     back_pct = position_tracker.get_back_sleep_percentage()
     print(f"\n  Back-sleep percentage: {back_pct}%")
     if back_pct > 50:
-        print("  ⚠️  High back-sleep time — primary snoring risk factor")
+        print("  High back-sleep time — primary snoring risk factor")
 
-    # final movement analysis
+    # movement
     if len(accel_buffer) >= 30:
         final_movement = classify_movement(
             accel_buffer.get_latest(), window_size=15, threshold=4.0
@@ -256,16 +348,25 @@ def run_simulation(duration_seconds=300, print_interval=30):
         final_restless = restlessness_percentage(final_movement)
         print(f"\n  Overall restlessness: {final_restless}%")
 
+    # generate dashboard JSON
+    dashboard = generate_dashboard_data()
+    with open("dashboard_data.json", "w") as f:
+        json.dump(dashboard, f, indent=2)
+    print(f"\nDashboard data saved to dashboard_data.json")
+
     print("\n" + "=" * 60)
-    print("  Pipeline components used:")
-    print("    1. Circular Buffer  — sensor data storage")
-    print("    2. Sliding Window   — movement classification")
-    print("    3. Priority Queue   — alert management")
-    print("    4. Hash Map         — signal correlation")
-    print("    5. Linked List      — event logging")
-    print("    6. Peak Finding     — snoring detection")
-    print("    7. State Machine    — position tracking")
+    print("  DSA components used:")
+    print("    1. Circular Buffer     — sensor data storage")
+    print("    2. Sliding Window      — movement classification")
+    print("    3. Priority Queue      — alert management")
+    print("    4. Hash Map            — signal correlation")
+    print("    5. Linked List         — event logging")
+    print("    6. Peak Finding        — snoring pattern detection")
+    print("    7. State Machine       — position tracking")
+    print("    8. Sound Classifier    — snoring vs sleep talking (ZCR + burst + variance)")
     print("=" * 60)
+
+    return dashboard
 
 
 # ===================================================================
@@ -273,5 +374,4 @@ def run_simulation(duration_seconds=300, print_interval=30):
 # ===================================================================
 
 if __name__ == "__main__":
-    # 5 minute demo — change to 28800 (8 hours) for full night sim
-    run_simulation(duration_seconds=300, print_interval=30)
+    dashboard = run_simulation(duration_seconds=600, print_interval=30)
