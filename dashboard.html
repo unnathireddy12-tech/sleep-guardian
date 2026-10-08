@@ -1,0 +1,560 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sleep Guardian Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #F7F6F3;
+    --bg-card: #FFFFFF;
+    --fg: #1A1A1A;
+    --fg-muted: #6B6B6B;
+    --border: #E5E3DE;
+    --accent: #3D5AF1;
+    --snore: #E8453C;
+    --talk: #8B5CF6;
+    --position: #0EA5E9;
+    --restless: #F59E0B;
+    --good: #10B981;
+    --ring-track: #E5E3DE;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111111;
+      --bg-card: #1A1A1A;
+      --fg: #E8E6E1;
+      --fg-muted: #8A8A8A;
+      --border: #2A2A2A;
+      --accent: #6B7FFF;
+      --snore: #F06B63;
+      --talk: #A78BFA;
+      --position: #38BDF8;
+      --restless: #FBBF24;
+      --good: #34D399;
+      --ring-track: #2A2A2A;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111111;
+    --bg-card: #1A1A1A;
+    --fg: #E8E6E1;
+    --fg-muted: #8A8A8A;
+    --border: #2A2A2A;
+    --accent: #6B7FFF;
+    --snore: #F06B63;
+    --talk: #A78BFA;
+    --position: #38BDF8;
+    --restless: #FBBF24;
+    --good: #34D399;
+    --ring-track: #2A2A2A;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    padding: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    font: 14px 'DM Sans', system-ui, sans-serif;
+  }
+  .header {
+    padding-top: 24px;
+    padding-bottom: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .header .date {
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .quality-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .quality-poor { background: color-mix(in srgb, var(--snore) 15%, transparent); color: var(--snore); }
+  .quality-fair { background: color-mix(in srgb, var(--restless) 15%, transparent); color: var(--restless); }
+  .quality-good { background: color-mix(in srgb, var(--good) 15%, transparent); color: var(--good); }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+  }
+  .stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .stat-unit {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--fg-muted);
+  }
+  .color-snore { color: var(--snore); }
+  .color-talk { color: var(--talk); }
+  .color-restless { color: var(--restless); }
+  .color-accent { color: var(--accent); }
+
+  .section {
+    margin-top: 28px;
+  }
+  .section-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-muted);
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .timeline-chart {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+  .timeline-chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .event-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .event-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .event-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .event-header h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  .event-total {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+  }
+  .event-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .event-table th {
+    text-align: left;
+    padding: 8px 16px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .event-table td {
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+  }
+  .event-table tr:last-child td {
+    border-bottom: none;
+  }
+  .dur-bar {
+    display: inline-block;
+    height: 6px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+
+  .position-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pos-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pos-label {
+    width: 80px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .pos-track {
+    flex: 1;
+    height: 10px;
+    background: var(--ring-track);
+    border-radius: 5px;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .pos-fill {
+    height: 100%;
+    border-radius: 5px;
+    background: var(--position);
+  }
+  .pos-pct {
+    width: 44px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    flex-shrink: 0;
+  }
+  .pos-fill.back-fill { background: var(--snore); }
+  .pos-fill.side-fill { background: var(--position); }
+  .pos-fill.stomach-fill { background: var(--good); }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--fg-muted);
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) {
+    .detail-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .warning-strip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    margin-top: 12px;
+    background: color-mix(in srgb, var(--snore) 10%, transparent);
+    color: var(--snore);
+    border: 1px solid color-mix(in srgb, var(--snore) 20%, transparent);
+  }
+
+  .footer {
+    margin-top: 32px;
+    padding: 16px 0 24px;
+    border-top: 1px solid var(--border);
+    font-size: 0.7rem;
+    color: var(--fg-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+  }
+  .footer .pipe { color: var(--border); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Sleep Guardian</h1>
+  <span class="date" id="session-date">Loading...</span>
+  <span class="quality-badge" id="quality-badge">--</span>
+</div>
+
+<div class="stats" id="stat-tiles"></div>
+
+<div class="section">
+  <div class="section-title">Event Timeline</div>
+  <div class="timeline-chart" id="timeline-container"></div>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--snore)"></div> Snoring</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--talk)"></div> Sleep Talking</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--position)"></div> Position Change</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--restless)"></div> Restless</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="detail-grid">
+    <div class="event-card">
+      <div class="event-header">
+        <div class="event-header-left">
+          <div class="dot" style="background:var(--snore)"></div>
+          <h3>Snoring</h3>
+        </div>
+        <span class="event-total" id="snore-total"></span>
+      </div>
+      <div style="max-height:260px;overflow-y:auto">
+        <table class="event-table">
+          <thead><tr><th>Time</th><th>Duration</th></tr></thead>
+          <tbody id="snore-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="event-card">
+      <div class="event-header">
+        <div class="event-header-left">
+          <div class="dot" style="background:var(--talk)"></div>
+          <h3>Sleep Talking</h3>
+        </div>
+        <span class="event-total" id="talk-total"></span>
+      </div>
+      <div style="max-height:260px;overflow-y:auto">
+        <table class="event-table">
+          <thead><tr><th>Time</th><th>Duration</th></tr></thead>
+          <tbody id="talk-rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title"><span class="dot" style="background:var(--position)"></span> Position Breakdown</div>
+  <div class="event-card" style="padding:20px">
+    <div class="position-bars" id="position-bars"></div>
+    <div class="warning-strip" id="back-warning" hidden></div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>Circular Buffer</span><span class="pipe">·</span>
+  <span>Sliding Window</span><span class="pipe">·</span>
+  <span>Priority Queue</span><span class="pipe">·</span>
+  <span>Hash Map</span><span class="pipe">·</span>
+  <span>Linked List</span><span class="pipe">·</span>
+  <span>Peak Finding</span><span class="pipe">·</span>
+  <span>State Machine</span><span class="pipe">·</span>
+  <span>Sound Classifier (ZCR)</span>
+</div>
+
+<script>
+(function() {
+  function fmtTime(s) {
+    var m = Math.floor(s / 60);
+    var sec = Math.floor(s % 60);
+    return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  }
+
+  function fmtTimestamp(s) {
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var sec = Math.floor(s % 60);
+    return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  }
+
+  fetch('dashboard_data.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) { render(data); })
+    .catch(function() {
+      document.getElementById('stat-tiles').innerHTML =
+        '<div class="stat-card"><span class="stat-label">Error</span>' +
+        '<span class="stat-unit">Could not load dashboard_data.json.<br>Run main.py first to generate it.</span></div>';
+    });
+
+  function render(data) {
+    var snoreEvents = data.snoring.events;
+    var talkEvents = data.sleep_talking.events;
+    var pos = data.position;
+
+    document.getElementById('session-date').textContent =
+      Math.round(data.duration_minutes) + ' min session';
+    var badge = document.getElementById('quality-badge');
+    var q = (data.sleep_quality || 'N/A').toLowerCase();
+    badge.textContent = data.sleep_quality;
+    badge.className = 'quality-badge quality-' + (q === 'good' ? 'good' : q === 'fair' ? 'fair' : 'poor');
+
+    var backPct = pos.back_sleep_percentage || 0;
+    document.getElementById('stat-tiles').innerHTML =
+      '<div class="stat-card"><span class="stat-label">Snoring Events</span>' +
+      '<span class="stat-value color-snore">' + data.snoring.total_events + '</span>' +
+      '<span class="stat-unit">' + data.snoring.total_duration_minutes + ' min total</span></div>' +
+      '<div class="stat-card"><span class="stat-label">Sleep Talking</span>' +
+      '<span class="stat-value color-talk">' + data.sleep_talking.total_events + '</span>' +
+      '<span class="stat-unit">' + data.sleep_talking.total_duration_minutes + ' min total</span></div>' +
+      '<div class="stat-card"><span class="stat-label">Position Changes</span>' +
+      '<span class="stat-value color-accent">' + pos.total_transitions + '</span>' +
+      '<span class="stat-unit">' + (pos.total_transitions > 30 ? 'high movement' : 'normal') + '</span></div>' +
+      '<div class="stat-card"><span class="stat-label">Back Sleep</span>' +
+      '<span class="stat-value color-restless">' + backPct + '<small>%</small></span>' +
+      '<span class="stat-unit">' + (backPct > 30 ? 'snoring risk' : 'low risk') + '</span></div>';
+
+    document.getElementById('snore-total').textContent =
+      data.snoring.total_events + ' events · ' + data.snoring.total_duration_minutes + ' min';
+    document.getElementById('talk-total').textContent =
+      data.sleep_talking.total_events + ' events · ' + data.sleep_talking.total_duration_minutes + ' min';
+
+    var totalDur = Math.max(600, data.duration_minutes * 60);
+    var totalMin = Math.ceil(totalDur / 60);
+    var W = 820, H = 100;
+    var padL = 36, padR = 10, padT = 12, padB = 24;
+    var chartW = W - padL - padR;
+    var chartH = H - padT - padB;
+    function x(s) { return padL + (s / totalDur) * chartW; }
+
+    var cs = getComputedStyle(document.documentElement);
+    var snoreColor = cs.getPropertyValue('--snore').trim();
+    var talkColor = cs.getPropertyValue('--talk').trim();
+    var mutedColor = cs.getPropertyValue('--fg-muted').trim();
+    var borderColor = cs.getPropertyValue('--border').trim();
+
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">';
+    for (var m = 0; m <= totalMin; m += 2) {
+      var xp = x(m * 60);
+      svg += '<line x1="' + xp + '" y1="' + padT + '" x2="' + xp + '" y2="' + (padT + chartH) + '" stroke="' + borderColor + '" stroke-width="0.5"/>';
+      svg += '<text x="' + xp + '" y="' + (H - 4) + '" text-anchor="middle" fill="' + mutedColor + '" font-size="9" font-family="DM Mono,monospace">' + m + 'm</text>';
+    }
+    var sY = padT + 4;
+    var sH = (chartH - 16) / 2;
+    svg += '<text x="' + (padL - 4) + '" y="' + (sY + sH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8" font-family="DM Sans,sans-serif">Snore</text>';
+    for (var i = 0; i < snoreEvents.length; i++) {
+      var e = snoreEvents[i];
+      var ex = x(e.start);
+      var ew = Math.max(2, x(e.end) - x(e.start));
+      svg += '<rect x="' + ex + '" y="' + sY + '" width="' + ew + '" height="' + sH + '" rx="2" fill="' + snoreColor + '" opacity="0.75"/>';
+    }
+    var tY = sY + sH + 8;
+    var tH = sH;
+    svg += '<text x="' + (padL - 4) + '" y="' + (tY + tH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8" font-family="DM Sans,sans-serif">Talk</text>';
+    for (var i = 0; i < talkEvents.length; i++) {
+      var e = talkEvents[i];
+      var ex = x(e.start);
+      var ew = Math.max(2, x(e.end) - x(e.start));
+      svg += '<rect x="' + ex + '" y="' + tY + '" width="' + ew + '" height="' + tH + '" rx="2" fill="' + talkColor + '" opacity="0.75"/>';
+    }
+    svg += '</svg>';
+    document.getElementById('timeline-container').innerHTML = svg;
+
+    var snoreBody = document.getElementById('snore-rows');
+    var maxSnoreDur = 1;
+    for (var i = 0; i < snoreEvents.length; i++) {
+      if (snoreEvents[i].duration > maxSnoreDur) maxSnoreDur = snoreEvents[i].duration;
+    }
+    var showCount = Math.min(12, snoreEvents.length);
+    for (var i = 0; i < showCount; i++) {
+      var e = snoreEvents[i];
+      var barW = Math.round((e.duration / maxSnoreDur) * 60);
+      snoreBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td>' +
+        '<td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--snore)"></span></td></tr>';
+    }
+    if (snoreEvents.length > 12) {
+      snoreBody.innerHTML += '<tr><td colspan="2" style="color:var(--fg-muted);font-family:DM Sans,sans-serif;font-style:italic">+ ' + (snoreEvents.length - 12) + ' more events</td></tr>';
+    }
+
+    var talkBody = document.getElementById('talk-rows');
+    var maxTalkDur = 1;
+    for (var i = 0; i < talkEvents.length; i++) {
+      if (talkEvents[i].duration > maxTalkDur) maxTalkDur = talkEvents[i].duration;
+    }
+    for (var i = 0; i < talkEvents.length; i++) {
+      var e = talkEvents[i];
+      var barW = Math.round((e.duration / maxTalkDur) * 60);
+      talkBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td>' +
+        '<td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--talk)"></span></td></tr>';
+    }
+
+    var posContainer = document.getElementById('position-bars');
+    var breakdown = pos.breakdown || {};
+    var positions = [
+      { key: 'back', label: 'Back', cls: 'back-fill' },
+      { key: 'side_left', label: 'Side Left', cls: 'side-fill' },
+      { key: 'side_right', label: 'Side Right', cls: 'side-fill' },
+      { key: 'stomach', label: 'Stomach', cls: 'stomach-fill' }
+    ];
+    var html = '';
+    for (var i = 0; i < positions.length; i++) {
+      var p = positions[i];
+      var pct = (breakdown[p.key] && breakdown[p.key].percentage) || 0;
+      html += '<div class="pos-row"><span class="pos-label">' + p.label + '</span>' +
+        '<div class="pos-track"><div class="pos-fill ' + p.cls + '" style="width:' + pct + '%"></div></div>' +
+        '<span class="pos-pct">' + pct + '%</span></div>';
+    }
+    posContainer.innerHTML = html;
+
+    if (backPct > 30) {
+      var warn = document.getElementById('back-warning');
+      warn.hidden = false;
+      warn.textContent = 'Back sleeping made up ' + backPct + '% of the session — primary risk factor for snoring. Vibration motor intervened during back+snoring events.';
+    }
+  }
+})();
+</script>
+</body>
+</html>
