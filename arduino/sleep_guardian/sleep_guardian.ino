@@ -1,10 +1,10 @@
 /*
   Sleep Guardian — Arduino/ESP32 Sensor Reader
 
-  Wiring:
-    MPU6050 (accelerometer):  SDA → A4, SCL → A5 (or D21/D22 on ESP32)
-    FSR (pressure sensor):    One leg → 5V, other leg → A0 + 10kΩ resistor to GND
-    Sound sensor (analog):    OUT → A1, VCC → 5V, GND → GND
+  Wiring (ESP32):
+    MPU6050 (accelerometer):  SDA → GPIO21, SCL → GPIO22
+    FSR (pressure sensor):    One leg → 3.3V, other leg → GPIO36 + 10kΩ to GND
+    Sound sensor (analog):    OUT → GPIO39, VCC → 3.3V, GND → GND
 
   Sends JSON over serial at 9600 baud, once per second:
     {"sound":52.3,"pressure":612.0,"position":"back","accel_magnitude":1.45}
@@ -17,9 +17,9 @@
 #define PWR_MGMT_1 0x6B
 #define ACCEL_XOUT_H 0x3B
 
-// ---- Pin definitions ----
-#define FSR_PIN A0
-#define SOUND_PIN A1
+// ---- Pin definitions (ESP32) ----
+#define FSR_PIN 36    // GPIO36 (VP) — analog input
+#define SOUND_PIN 39  // GPIO39 (VN) — analog input
 
 // ---- Position thresholds (tune for your pillow mounting) ----
 // Based on accelerometer X, Y, Z orientation when MPU6050 is on the pillow
@@ -79,13 +79,13 @@ void loop() {
   float magnitude = sqrt(accelX * accelX + accelY * accelY + accelZ * accelZ);
   String position = classifyPosition();
 
-  // 2. Read FSR pressure sensor (0-1023 → 0-1023 raw)
+  // 2. Read FSR pressure sensor (ESP32: 12-bit, 0-4095)
   int fsrRaw = analogRead(FSR_PIN);
   float pressure = (float)fsrRaw;
 
-  // 3. Read sound sensor (analog, 0-1023 → map to ~20-100 dB range)
+  // 3. Read sound sensor (ESP32: 12-bit, 0-4095 → map to ~20-100 dB range)
   int soundRaw = analogRead(SOUND_PIN);
-  float sound = map(soundRaw, 0, 1023, 20, 100);
+  float sound = map(soundRaw, 0, 4095, 20, 100);
 
   // 4. Send JSON over serial
   Serial.print("{\"sound\":");
