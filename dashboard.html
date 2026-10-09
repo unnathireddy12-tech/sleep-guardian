@@ -20,6 +20,7 @@
     --good: #10B981;
     --ring-track: #E5E3DE;
     --insomnia: #EC4899;
+    --live: #22C55E;
     font-family: 'DM Sans', system-ui, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
@@ -37,6 +38,7 @@
       --good: #34D399;
       --ring-track: #2A2A2A;
       --insomnia: #F472B6;
+      --live: #4ADE80;
       color-scheme: dark;
     }
   }
@@ -54,6 +56,7 @@
     --good: #34D399;
     --ring-track: #2A2A2A;
     --insomnia: #F472B6;
+    --live: #4ADE80;
     color-scheme: dark;
   }
   body {
@@ -61,7 +64,7 @@
     color: var(--fg);
     margin: 0;
     padding: 16px;
-    max-width: 900px;
+    max-width: 960px;
     margin: 0 auto;
     font: 14px 'DM Sans', system-ui, sans-serif;
   }
@@ -84,6 +87,43 @@
     color: var(--fg-muted);
     font-family: 'DM Mono', monospace;
   }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-top: 16px;
+  }
+  .tab {
+    padding: 10px 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--fg-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab:hover { color: var(--fg); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--live);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
   .quality-badge {
     display: inline-flex;
     align-items: center;
@@ -138,6 +178,80 @@
   .color-restless { color: var(--restless); }
   .color-accent { color: var(--accent); }
   .color-insomnia { color: var(--insomnia); }
+  .color-live { color: var(--live); }
+
+  /* Live panel */
+  .live-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .live-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .live-card .stat-value {
+    font-size: 2.2rem;
+    transition: color 0.3s;
+  }
+  .live-card .stat-label { margin-bottom: 6px; }
+  .live-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--live);
+  }
+  .live-status.offline { color: var(--snore); }
+  .live-log {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    max-height: 280px;
+    overflow-y: auto;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.8;
+  }
+  .log-entry { border-bottom: 1px solid var(--border); padding: 4px 0; }
+  .log-entry:last-child { border-bottom: none; }
+  .log-time { color: var(--fg-muted); margin-right: 8px; }
+
+  /* History */
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .history-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--fg-muted);
+    border-bottom: 2px solid var(--border);
+  }
+  .history-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .history-table tr:last-child td { border-bottom: none; }
+  .history-table tr:hover td { background: color-mix(in srgb, var(--accent) 5%, transparent); }
+  .trend-up { color: var(--snore); }
+  .trend-down { color: var(--good); }
+  .trend-same { color: var(--fg-muted); }
 
   .risk-meter { margin-bottom: 16px; }
   .risk-track {
@@ -192,9 +306,7 @@
     color: var(--fg-muted);
   }
 
-  .section {
-    margin-top: 28px;
-  }
+  .section { margin-top: 28px; }
   .section-title {
     font-size: 0.8rem;
     font-weight: 600;
@@ -212,7 +324,6 @@
     border-radius: 50%;
     display: inline-block;
   }
-
   .timeline-chart {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -220,12 +331,7 @@
     padding: 20px;
     overflow-x: auto;
   }
-  .timeline-chart svg {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
+  .timeline-chart svg { display: block; width: 100%; height: auto; }
   .event-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -241,16 +347,8 @@
     flex-wrap: wrap;
     gap: 8px;
   }
-  .event-header-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .event-header h3 {
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin: 0;
-  }
+  .event-header-left { display: flex; align-items: center; gap: 8px; }
+  .event-header h3 { font-size: 0.9rem; font-weight: 600; margin: 0; }
   .event-total {
     font-family: 'DM Mono', monospace;
     font-size: 0.75rem;
@@ -278,9 +376,7 @@
     font-family: 'DM Mono', monospace;
     font-size: 0.75rem;
   }
-  .event-table tr:last-child td {
-    border-bottom: none;
-  }
+  .event-table tr:last-child td { border-bottom: none; }
   .dur-bar {
     display: inline-block;
     height: 6px;
@@ -288,17 +384,8 @@
     vertical-align: middle;
     margin-left: 8px;
   }
-
-  .position-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pos-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+  .position-bars { display: flex; flex-direction: column; gap: 10px; }
+  .pos-row { display: flex; align-items: center; gap: 12px; }
   .pos-label {
     width: 80px;
     font-size: 0.78rem;
@@ -314,11 +401,7 @@
     overflow: hidden;
     min-width: 0;
   }
-  .pos-fill {
-    height: 100%;
-    border-radius: 5px;
-    background: var(--position);
-  }
+  .pos-fill { height: 100%; border-radius: 5px; background: var(--position); }
   .pos-pct {
     width: 44px;
     font-family: 'DM Mono', monospace;
@@ -329,36 +412,15 @@
   .pos-fill.back-fill { background: var(--snore); }
   .pos-fill.side-fill { background: var(--position); }
   .pos-fill.stomach-fill { background: var(--good); }
-
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 8px;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.72rem;
-    color: var(--fg-muted);
-  }
-  .legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-  }
-
-  .detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--fg-muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   @media (max-width: 600px) {
     .detail-grid { grid-template-columns: 1fr; }
     .stats { grid-template-columns: repeat(2, 1fr); }
+    .live-grid { grid-template-columns: repeat(2, 1fr); }
   }
-
   .warning-strip {
     display: flex;
     align-items: center;
@@ -372,7 +434,6 @@
     color: var(--snore);
     border: 1px solid color-mix(in srgb, var(--snore) 20%, transparent);
   }
-
   .footer {
     margin-top: 32px;
     padding: 16px 0 24px;
@@ -391,117 +452,206 @@
 <div class="header">
   <h1>Sleep Guardian</h1>
   <span class="date" id="session-date">Loading...</span>
-  <span class="quality-badge" id="quality-badge">--</span>
+  <span class="quality-badge" id="quality-badge" hidden>--</span>
 </div>
 
-<div class="stats" id="stat-tiles"></div>
+<div class="tabs">
+  <div class="tab active" data-tab="live"><span class="live-dot"></span> Live</div>
+  <div class="tab" data-tab="report">Session Report</div>
+  <div class="tab" data-tab="history">History</div>
+</div>
 
-<div class="section">
-  <div class="section-title">Event Timeline</div>
-  <div class="timeline-chart" id="timeline-container"></div>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--snore)"></div> Snoring</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--talk)"></div> Sleep Talking</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--position)"></div> Position Change</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--restless)"></div> Restless</div>
+<!-- ==================== LIVE TAB ==================== -->
+<div class="tab-panel active" id="panel-live">
+  <div class="live-status" id="live-status">
+    <span class="live-dot"></span> Connecting to sensors...
+  </div>
+
+  <div class="live-grid">
+    <div class="live-card">
+      <div class="stat-label">Sound Level</div>
+      <div class="stat-value color-snore" id="live-sound">--</div>
+      <div class="stat-unit">dB</div>
+    </div>
+    <div class="live-card">
+      <div class="stat-label">Movement</div>
+      <div class="stat-value color-restless" id="live-movement">--</div>
+      <div class="stat-unit">g-force</div>
+    </div>
+    <div class="live-card">
+      <div class="stat-label">Pressure</div>
+      <div class="stat-value color-accent" id="live-pressure">--</div>
+      <div class="stat-unit">raw</div>
+    </div>
+    <div class="live-card">
+      <div class="stat-label">Position</div>
+      <div class="stat-value color-live" id="live-position" style="font-size:1.4rem">--</div>
+      <div class="stat-unit" id="live-time">00:00</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--live)"></span> Live Event Log</div>
+    <div class="live-log" id="live-log">
+      <div style="color:var(--fg-muted);text-align:center;padding:20px">
+        Waiting for sensor data...<br>
+        Start the server: <code>python server.py --hardware</code>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="section">
-  <div class="detail-grid">
-    <div class="event-card">
-      <div class="event-header">
-        <div class="event-header-left">
-          <div class="dot" style="background:var(--snore)"></div>
-          <h3>Snoring</h3>
+<!-- ==================== SESSION REPORT TAB ==================== -->
+<div class="tab-panel" id="panel-report">
+  <div class="stats" id="stat-tiles"></div>
+
+  <div class="section">
+    <div class="section-title">Event Timeline</div>
+    <div class="timeline-chart" id="timeline-container"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--snore)"></div> Snoring</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--talk)"></div> Sleep Talking</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--position)"></div> Position Change</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--restless)"></div> Restless</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="detail-grid">
+      <div class="event-card">
+        <div class="event-header">
+          <div class="event-header-left">
+            <div class="dot" style="background:var(--snore)"></div>
+            <h3>Snoring</h3>
+          </div>
+          <span class="event-total" id="snore-total"></span>
         </div>
-        <span class="event-total" id="snore-total"></span>
+        <div style="max-height:260px;overflow-y:auto">
+          <table class="event-table">
+            <thead><tr><th>Time</th><th>Duration</th></tr></thead>
+            <tbody id="snore-rows"></tbody>
+          </table>
+        </div>
       </div>
-      <div style="max-height:260px;overflow-y:auto">
-        <table class="event-table">
-          <thead><tr><th>Time</th><th>Duration</th></tr></thead>
-          <tbody id="snore-rows"></tbody>
+      <div class="event-card">
+        <div class="event-header">
+          <div class="event-header-left">
+            <div class="dot" style="background:var(--talk)"></div>
+            <h3>Sleep Talking</h3>
+          </div>
+          <span class="event-total" id="talk-total"></span>
+        </div>
+        <div style="max-height:260px;overflow-y:auto">
+          <table class="event-table">
+            <thead><tr><th>Time</th><th>Duration</th></tr></thead>
+            <tbody id="talk-rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title"><span class="dot" style="background:var(--position)"></span> Position Breakdown</div>
+    <div class="event-card" style="padding:20px">
+      <div class="position-bars" id="position-bars"></div>
+      <div class="warning-strip" id="back-warning" hidden></div>
+    </div>
+  </div>
+
+  <div class="section" id="insomnia-section" hidden>
+    <div class="section-title"><span class="dot" style="background:var(--insomnia)"></span> Insomnia Detection</div>
+    <div class="event-card" style="padding:20px">
+      <div class="risk-meter">
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span class="stat-value color-insomnia" id="insomnia-score">0</span>
+          <span class="stat-unit">/100</span>
+          <span class="quality-badge" id="insomnia-level">low</span>
+        </div>
+        <div class="risk-track"><div class="risk-fill" id="risk-fill" style="width:0%"></div></div>
+        <div class="risk-label"><span>Low</span><span>Moderate</span><span>High</span></div>
+      </div>
+      <div class="stats" style="margin-top:0">
+        <div class="stat-card">
+          <span class="stat-label">Restless Ratio</span>
+          <span class="stat-value" id="ins-ratio">0<small>%</small></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Longest Streak</span>
+          <span class="stat-value" id="ins-streak">0<small> min</small></span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Episodes</span>
+          <span class="stat-value" id="ins-episodes">0</span>
+        </div>
+      </div>
+      <div id="insomnia-ep-list" style="margin-top:12px"></div>
+      <div class="warning-strip" id="insomnia-warning" hidden></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== HISTORY TAB ==================== -->
+<div class="tab-panel" id="panel-history">
+  <div class="section" style="margin-top:16px">
+    <div class="section-title">Session History</div>
+    <div class="event-card">
+      <div style="overflow-x:auto">
+        <table class="history-table" id="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Duration</th>
+              <th>Quality</th>
+              <th>Snoring</th>
+              <th>Talking</th>
+              <th>Back %</th>
+              <th>Insomnia</th>
+            </tr>
+          </thead>
+          <tbody id="history-rows"></tbody>
         </table>
       </div>
     </div>
-
-    <div class="event-card">
-      <div class="event-header">
-        <div class="event-header-left">
-          <div class="dot" style="background:var(--talk)"></div>
-          <h3>Sleep Talking</h3>
-        </div>
-        <span class="event-total" id="talk-total"></span>
-      </div>
-      <div style="max-height:260px;overflow-y:auto">
-        <table class="event-table">
-          <thead><tr><th>Time</th><th>Duration</th></tr></thead>
-          <tbody id="talk-rows"></tbody>
-        </table>
-      </div>
-    </div>
   </div>
-</div>
 
-<div class="section">
-  <div class="section-title"><span class="dot" style="background:var(--position)"></span> Position Breakdown</div>
-  <div class="event-card" style="padding:20px">
-    <div class="position-bars" id="position-bars"></div>
-    <div class="warning-strip" id="back-warning" hidden></div>
-  </div>
-</div>
-
-<div class="section" id="insomnia-section" hidden>
-  <div class="section-title"><span class="dot" style="background:var(--insomnia)"></span> Insomnia Detection</div>
-  <div class="event-card" style="padding:20px">
-    <div class="risk-meter">
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <span class="stat-value color-insomnia" id="insomnia-score">0</span>
-        <span class="stat-unit">/100</span>
-        <span class="quality-badge" id="insomnia-level">low</span>
-      </div>
-      <div class="risk-track"><div class="risk-fill" id="risk-fill" style="width:0%"></div></div>
-      <div class="risk-label"><span>Low</span><span>Moderate</span><span>High</span></div>
-    </div>
-    <div class="stats" style="margin-top:0">
-      <div class="stat-card">
-        <span class="stat-label">Restless Ratio</span>
-        <span class="stat-value" id="ins-ratio">0<small>%</small></span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Longest Streak</span>
-        <span class="stat-value" id="ins-streak">0<small> min</small></span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Episodes</span>
-        <span class="stat-value" id="ins-episodes">0</span>
-      </div>
-    </div>
-    <div id="insomnia-ep-list" style="margin-top:12px"></div>
-    <div class="warning-strip" id="insomnia-warning" hidden></div>
+  <div class="section" id="history-trends">
+    <div class="section-title">Trends</div>
+    <div class="stats" id="trend-tiles"></div>
   </div>
 </div>
 
 <div class="footer">
-  <span>Circular Buffer</span><span class="pipe">·</span>
-  <span>Sliding Window</span><span class="pipe">·</span>
-  <span>Priority Queue</span><span class="pipe">·</span>
-  <span>Hash Map</span><span class="pipe">·</span>
-  <span>Linked List</span><span class="pipe">·</span>
-  <span>Peak Finding</span><span class="pipe">·</span>
-  <span>State Machine</span><span class="pipe">·</span>
-  <span>Sound Classifier (ZCR)</span><span class="pipe">·</span>
+  <span>Circular Buffer</span><span class="pipe">&middot;</span>
+  <span>Sliding Window</span><span class="pipe">&middot;</span>
+  <span>Priority Queue</span><span class="pipe">&middot;</span>
+  <span>Hash Map</span><span class="pipe">&middot;</span>
+  <span>Linked List</span><span class="pipe">&middot;</span>
+  <span>Peak Finding</span><span class="pipe">&middot;</span>
+  <span>State Machine</span><span class="pipe">&middot;</span>
+  <span>Sound Classifier (ZCR)</span><span class="pipe">&middot;</span>
   <span>Insomnia Detector (RLE)</span>
 </div>
 
 <script>
 (function() {
+  // ========== TAB SWITCHING ==========
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', function() {
+      for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+      this.classList.add('active');
+      var panels = document.querySelectorAll('.tab-panel');
+      for (var j = 0; j < panels.length; j++) panels[j].classList.remove('active');
+      document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+    });
+  }
+
   function fmtTime(s) {
     var m = Math.floor(s / 60);
     var sec = Math.floor(s % 60);
     return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
   }
-
   function fmtTimestamp(s) {
     var h = Math.floor(s / 3600);
     var m = Math.floor((s % 3600) / 60);
@@ -509,16 +659,82 @@
     return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
   }
 
+  // ========== LIVE TAB ==========
+  var liveConnected = false;
+  var logEntries = [];
+  var maxLogEntries = 50;
+
+  function pollLive() {
+    fetch('/api/live')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (!liveConnected) {
+          liveConnected = true;
+          document.getElementById('live-status').innerHTML =
+            '<span class="live-dot"></span> Recording — sensors active';
+        }
+        var r = d.reading || {};
+        document.getElementById('live-sound').textContent =
+          r.sound !== undefined ? r.sound.toFixed(1) : '--';
+        document.getElementById('live-movement').textContent =
+          r.accel_magnitude !== undefined ? r.accel_magnitude.toFixed(2) : '--';
+        document.getElementById('live-pressure').textContent =
+          r.pressure !== undefined ? Math.round(r.pressure) : '--';
+        document.getElementById('live-position').textContent =
+          (d.position || '--').replace('_', ' ');
+        document.getElementById('live-time').textContent =
+          fmtTime(d.timestamp || 0) + ' elapsed';
+
+        var soundEl = document.getElementById('live-sound');
+        if (r.sound > 60) soundEl.style.color = 'var(--snore)';
+        else soundEl.style.color = 'var(--fg-muted)';
+
+        var moveEl = document.getElementById('live-movement');
+        if (r.accel_magnitude > 4) moveEl.style.color = 'var(--restless)';
+        else moveEl.style.color = 'var(--fg-muted)';
+
+        if (d.actions && d.actions.length > 0) {
+          var logDiv = document.getElementById('live-log');
+          for (var i = 0; i < d.actions.length; i++) {
+            logEntries.unshift({
+              time: fmtTime(d.timestamp),
+              text: d.actions[i]
+            });
+          }
+          if (logEntries.length > maxLogEntries) logEntries.length = maxLogEntries;
+
+          var html = '';
+          for (var i = 0; i < logEntries.length; i++) {
+            html += '<div class="log-entry"><span class="log-time">' +
+              logEntries[i].time + '</span>' + logEntries[i].text + '</div>';
+          }
+          logDiv.innerHTML = html;
+        }
+      })
+      .catch(function() {
+        if (liveConnected) {
+          liveConnected = false;
+          var st = document.getElementById('live-status');
+          st.className = 'live-status offline';
+          st.innerHTML = 'Offline — server not running';
+        }
+      });
+  }
+
+  setInterval(pollLive, 1000);
+  pollLive();
+
+  // ========== SESSION REPORT TAB ==========
   fetch('dashboard_data.json')
     .then(function(r) { return r.json(); })
-    .then(function(data) { render(data); })
+    .then(function(data) { renderReport(data); })
     .catch(function() {
       document.getElementById('stat-tiles').innerHTML =
-        '<div class="stat-card"><span class="stat-label">Error</span>' +
-        '<span class="stat-unit">Could not load dashboard_data.json.<br>Run main.py first to generate it.</span></div>';
+        '<div class="stat-card"><span class="stat-label">No Session Data</span>' +
+        '<span class="stat-unit">Run a session first to see the report.</span></div>';
     });
 
-  function render(data) {
+  function renderReport(data) {
     var snoreEvents = data.snoring.events;
     var talkEvents = data.sleep_talking.events;
     var pos = data.position;
@@ -526,6 +742,7 @@
     document.getElementById('session-date').textContent =
       Math.round(data.duration_minutes) + ' min session';
     var badge = document.getElementById('quality-badge');
+    badge.hidden = false;
     var q = (data.sleep_quality || 'N/A').toLowerCase();
     badge.textContent = data.sleep_quality;
     badge.className = 'quality-badge quality-' + (q === 'good' ? 'good' : q === 'fair' ? 'fair' : 'poor');
@@ -552,10 +769,8 @@
 
     var totalDur = Math.max(600, data.duration_minutes * 60);
     var totalMin = Math.ceil(totalDur / 60);
-    var W = 820, H = 100;
-    var padL = 36, padR = 10, padT = 12, padB = 24;
-    var chartW = W - padL - padR;
-    var chartH = H - padT - padB;
+    var W = 820, H = 100, padL = 36, padR = 10, padT = 12, padB = 24;
+    var chartW = W - padL - padR, chartH = H - padT - padB;
     function x(s) { return padL + (s / totalDur) * chartW; }
 
     var cs = getComputedStyle(document.documentElement);
@@ -570,53 +785,39 @@
       svg += '<line x1="' + xp + '" y1="' + padT + '" x2="' + xp + '" y2="' + (padT + chartH) + '" stroke="' + borderColor + '" stroke-width="0.5"/>';
       svg += '<text x="' + xp + '" y="' + (H - 4) + '" text-anchor="middle" fill="' + mutedColor + '" font-size="9" font-family="DM Mono,monospace">' + m + 'm</text>';
     }
-    var sY = padT + 4;
-    var sH = (chartH - 16) / 2;
+    var sY = padT + 4, sH = (chartH - 16) / 2;
     svg += '<text x="' + (padL - 4) + '" y="' + (sY + sH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8" font-family="DM Sans,sans-serif">Snore</text>';
     for (var i = 0; i < snoreEvents.length; i++) {
       var e = snoreEvents[i];
-      var ex = x(e.start);
-      var ew = Math.max(2, x(e.end) - x(e.start));
-      svg += '<rect x="' + ex + '" y="' + sY + '" width="' + ew + '" height="' + sH + '" rx="2" fill="' + snoreColor + '" opacity="0.75"/>';
+      svg += '<rect x="' + x(e.start) + '" y="' + sY + '" width="' + Math.max(2, x(e.end) - x(e.start)) + '" height="' + sH + '" rx="2" fill="' + snoreColor + '" opacity="0.75"/>';
     }
-    var tY = sY + sH + 8;
-    var tH = sH;
+    var tY = sY + sH + 8, tH = sH;
     svg += '<text x="' + (padL - 4) + '" y="' + (tY + tH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8" font-family="DM Sans,sans-serif">Talk</text>';
     for (var i = 0; i < talkEvents.length; i++) {
       var e = talkEvents[i];
-      var ex = x(e.start);
-      var ew = Math.max(2, x(e.end) - x(e.start));
-      svg += '<rect x="' + ex + '" y="' + tY + '" width="' + ew + '" height="' + tH + '" rx="2" fill="' + talkColor + '" opacity="0.75"/>';
+      svg += '<rect x="' + x(e.start) + '" y="' + tY + '" width="' + Math.max(2, x(e.end) - x(e.start)) + '" height="' + tH + '" rx="2" fill="' + talkColor + '" opacity="0.75"/>';
     }
     svg += '</svg>';
     document.getElementById('timeline-container').innerHTML = svg;
 
     var snoreBody = document.getElementById('snore-rows');
     var maxSnoreDur = 1;
-    for (var i = 0; i < snoreEvents.length; i++) {
-      if (snoreEvents[i].duration > maxSnoreDur) maxSnoreDur = snoreEvents[i].duration;
-    }
+    for (var i = 0; i < snoreEvents.length; i++) if (snoreEvents[i].duration > maxSnoreDur) maxSnoreDur = snoreEvents[i].duration;
     var showCount = Math.min(12, snoreEvents.length);
     for (var i = 0; i < showCount; i++) {
       var e = snoreEvents[i];
       var barW = Math.round((e.duration / maxSnoreDur) * 60);
-      snoreBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td>' +
-        '<td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--snore)"></span></td></tr>';
+      snoreBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td><td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--snore)"></span></td></tr>';
     }
-    if (snoreEvents.length > 12) {
-      snoreBody.innerHTML += '<tr><td colspan="2" style="color:var(--fg-muted);font-family:DM Sans,sans-serif;font-style:italic">+ ' + (snoreEvents.length - 12) + ' more events</td></tr>';
-    }
+    if (snoreEvents.length > 12) snoreBody.innerHTML += '<tr><td colspan="2" style="color:var(--fg-muted);font-style:italic">+ ' + (snoreEvents.length - 12) + ' more</td></tr>';
 
     var talkBody = document.getElementById('talk-rows');
     var maxTalkDur = 1;
-    for (var i = 0; i < talkEvents.length; i++) {
-      if (talkEvents[i].duration > maxTalkDur) maxTalkDur = talkEvents[i].duration;
-    }
+    for (var i = 0; i < talkEvents.length; i++) if (talkEvents[i].duration > maxTalkDur) maxTalkDur = talkEvents[i].duration;
     for (var i = 0; i < talkEvents.length; i++) {
       var e = talkEvents[i];
       var barW = Math.round((e.duration / maxTalkDur) * 60);
-      talkBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td>' +
-        '<td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--talk)"></span></td></tr>';
+      talkBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td><td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--talk)"></span></td></tr>';
     }
 
     var posContainer = document.getElementById('position-bars');
@@ -631,16 +832,14 @@
     for (var i = 0; i < positions.length; i++) {
       var p = positions[i];
       var pct = (breakdown[p.key] && breakdown[p.key].percentage) || 0;
-      html += '<div class="pos-row"><span class="pos-label">' + p.label + '</span>' +
-        '<div class="pos-track"><div class="pos-fill ' + p.cls + '" style="width:' + pct + '%"></div></div>' +
-        '<span class="pos-pct">' + pct + '%</span></div>';
+      html += '<div class="pos-row"><span class="pos-label">' + p.label + '</span><div class="pos-track"><div class="pos-fill ' + p.cls + '" style="width:' + pct + '%"></div></div><span class="pos-pct">' + pct + '%</span></div>';
     }
     posContainer.innerHTML = html;
 
     if (backPct > 30) {
       var warn = document.getElementById('back-warning');
       warn.hidden = false;
-      warn.textContent = 'Back sleeping made up ' + backPct + '% of the session — primary risk factor for snoring. Vibration motor intervened during back+snoring events.';
+      warn.textContent = 'Back sleeping made up ' + backPct + '% of the session — primary risk factor for snoring.';
     }
 
     if (data.insomnia && data.insomnia.score !== undefined) {
@@ -648,34 +847,21 @@
       document.getElementById('insomnia-section').hidden = false;
       document.getElementById('insomnia-score').textContent = ins.score;
       document.getElementById('risk-fill').style.width = ins.score + '%';
-
       var lvlBadge = document.getElementById('insomnia-level');
       lvlBadge.textContent = ins.level;
-      lvlBadge.className = 'quality-badge quality-' +
-        (ins.level === 'high' ? 'poor' : ins.level === 'moderate' ? 'fair' : 'good');
-
+      lvlBadge.className = 'quality-badge quality-' + (ins.level === 'high' ? 'poor' : ins.level === 'moderate' ? 'fair' : 'good');
       var factors = ins.factors || {};
-      document.getElementById('ins-ratio').innerHTML =
-        (factors.restless_ratio || 0) + '<small>%</small>';
-      document.getElementById('ins-streak').innerHTML =
-        (factors.longest_streak_minutes || 0) + '<small> min</small>';
-      document.getElementById('ins-episodes').textContent =
-        factors.episode_count || 0;
-
+      document.getElementById('ins-ratio').innerHTML = (factors.restless_ratio || 0) + '<small>%</small>';
+      document.getElementById('ins-streak').innerHTML = (factors.longest_streak_minutes || 0) + '<small> min</small>';
+      document.getElementById('ins-episodes').textContent = factors.episode_count || 0;
       var epList = document.getElementById('insomnia-ep-list');
       var episodes = ins.episodes || [];
       var epHtml = '';
       for (var i = 0; i < episodes.length; i++) {
         var ep = episodes[i];
-        epHtml += '<div class="insomnia-ep">' +
-          '<div class="ep-badge">' + (i + 1) + '</div>' +
-          '<div class="ep-details">' +
-          '<div class="ep-time">' + fmtTime(ep.start_seconds) + ' – ' + fmtTime(ep.end_seconds) + '</div>' +
-          '<div class="ep-dur">' + ep.duration_minutes + ' min · intensity ' + ep.avg_intensity + '</div>' +
-          '</div></div>';
+        epHtml += '<div class="insomnia-ep"><div class="ep-badge">' + (i + 1) + '</div><div class="ep-details"><div class="ep-time">' + fmtTime(ep.start_seconds) + ' – ' + fmtTime(ep.end_seconds) + '</div><div class="ep-dur">' + ep.duration_minutes + ' min · intensity ' + ep.avg_intensity + '</div></div></div>';
       }
       epList.innerHTML = epHtml;
-
       if (ins.level === 'high' || ins.level === 'moderate') {
         var iw = document.getElementById('insomnia-warning');
         iw.hidden = false;
@@ -683,9 +869,71 @@
         iw.style.color = 'var(--insomnia)';
         iw.style.borderColor = 'color-mix(in srgb, var(--insomnia) 20%, transparent)';
         iw.textContent = ins.level === 'high'
-          ? 'High insomnia risk detected — prolonged restless periods suggest difficulty falling or staying asleep.'
-          : 'Moderate insomnia indicators — some extended restless periods detected during the session.';
+          ? 'High insomnia risk — prolonged restless periods suggest difficulty falling or staying asleep.'
+          : 'Moderate insomnia indicators — some extended restless periods detected.';
       }
+    }
+  }
+
+  // ========== HISTORY TAB ==========
+  fetch('session_history.json')
+    .then(function(r) { return r.json(); })
+    .then(function(history) { renderHistory(history); })
+    .catch(function() {
+      document.getElementById('history-rows').innerHTML =
+        '<tr><td colspan="7" style="text-align:center;color:var(--fg-muted);padding:20px">No session history yet.</td></tr>';
+    });
+
+  function renderHistory(history) {
+    var rows = document.getElementById('history-rows');
+    if (!history.length) {
+      rows.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--fg-muted);padding:20px">No sessions recorded yet.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    for (var i = history.length - 1; i >= 0; i--) {
+      var s = history[i];
+      var qClass = (s.sleep_quality || '').toLowerCase();
+      qClass = qClass === 'good' ? 'good' : qClass === 'fair' ? 'fair' : 'poor';
+      var insLevel = s.insomnia ? s.insomnia.level : 'low';
+      var insClass = insLevel === 'high' ? 'poor' : insLevel === 'moderate' ? 'fair' : 'good';
+
+      html += '<tr>' +
+        '<td style="font-weight:600">' + s.date + '</td>' +
+        '<td><span style="font-family:DM Mono,monospace">' + Math.round(s.duration_minutes) + '</span> min</td>' +
+        '<td><span class="quality-badge quality-' + qClass + '">' + (s.sleep_quality || 'N/A') + '</span></td>' +
+        '<td><span class="color-snore" style="font-weight:600">' + (s.snoring ? s.snoring.total_events : 0) + '</span> <span style="color:var(--fg-muted);font-size:0.72rem">(' + (s.snoring ? s.snoring.total_duration_minutes : 0) + ' min)</span></td>' +
+        '<td><span class="color-talk" style="font-weight:600">' + (s.sleep_talking ? s.sleep_talking.total_events : 0) + '</span></td>' +
+        '<td><span style="font-family:DM Mono,monospace">' + (s.position ? s.position.back_sleep_percentage : 0) + '%</span></td>' +
+        '<td><span class="quality-badge quality-' + insClass + '">' + (s.insomnia ? s.insomnia.score + '/100' : '--') + '</span></td>' +
+        '</tr>';
+    }
+    rows.innerHTML = html;
+
+    // Trend tiles
+    if (history.length >= 2) {
+      var latest = history[history.length - 1];
+      var prev = history[history.length - 2];
+
+      var snoreDiff = (latest.snoring ? latest.snoring.total_events : 0) - (prev.snoring ? prev.snoring.total_events : 0);
+      var backDiff = ((latest.position ? latest.position.back_sleep_percentage : 0) - (prev.position ? prev.position.back_sleep_percentage : 0)).toFixed(1);
+      var insDiff = (latest.insomnia ? latest.insomnia.score : 0) - (prev.insomnia ? prev.insomnia.score : 0);
+      var durDiff = Math.round((latest.duration_minutes || 0) - (prev.duration_minutes || 0));
+
+      function trendArrow(val, invert) {
+        if (val === 0) return '<span class="trend-same">— same</span>';
+        var good = invert ? val < 0 : val > 0;
+        var cls = good ? 'trend-down' : 'trend-up';
+        var arrow = val > 0 ? '↑' : '↓';
+        return '<span class="' + cls + '">' + arrow + ' ' + Math.abs(val) + '</span>';
+      }
+
+      document.getElementById('trend-tiles').innerHTML =
+        '<div class="stat-card"><span class="stat-label">Snoring vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(snoreDiff, true) + '</span><span class="stat-unit">events</span></div>' +
+        '<div class="stat-card"><span class="stat-label">Back Sleep vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(parseFloat(backDiff), true) + '</span><span class="stat-unit">percentage points</span></div>' +
+        '<div class="stat-card"><span class="stat-label">Insomnia vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(insDiff, true) + '</span><span class="stat-unit">risk score</span></div>' +
+        '<div class="stat-card"><span class="stat-label">Duration vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(durDiff, false) + '</span><span class="stat-unit">minutes</span></div>';
     }
   }
 })();

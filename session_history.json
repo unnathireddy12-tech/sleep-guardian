@@ -1,0 +1,81 @@
+[
+  {
+    "session_id": 1,
+    "date": "2026-10-07",
+    "duration_minutes": 462,
+    "sleep_quality": "Good",
+    "snoring": {
+      "total_events": 12,
+      "total_duration_minutes": 3.2
+    },
+    "sleep_talking": {
+      "total_events": 2,
+      "total_duration_minutes": 0.3
+    },
+    "position": {
+      "back_sleep_percentage": 22.5,
+      "total_transitions": 18
+    },
+    "restlessness_percentage": 8.4,
+    "insomnia": {
+      "score": 12,
+      "level": "low",
+      "episodes": []
+    }
+  },
+  {
+    "session_id": 2,
+    "date": "2026-10-08",
+    "duration_minutes": 387,
+    "sleep_quality": "Fair",
+    "snoring": {
+      "total_events": 31,
+      "total_duration_minutes": 8.1
+    },
+    "sleep_talking": {
+      "total_events": 5,
+      "total_duration_minutes": 0.9
+    },
+    "position": {
+      "back_sleep_percentage": 48.3,
+      "total_transitions": 34
+    },
+    "restlessness_percentage": 24.6,
+    "insomnia": {
+      "score": 38,
+      "level": "moderate",
+      "episodes": [
+        {
+          "start_seconds": 7200,
+          "end_seconds": 7560,
+          "duration_minutes": 6.0,
+          "avg_intensity": 4.8
+        }
+      ]
+    }
+  },
+  {
+    "session_id": 3,
+    "date": "2026-10-09",
+    "duration_minutes": 421,
+    "sleep_quality": "Good",
+    "snoring": {
+      "total_events": 8,
+      "total_duration_minutes": 1.9
+    },
+    "sleep_talking": {
+      "total_events": 1,
+      "total_duration_minutes": 0.2
+    },
+    "position": {
+      "back_sleep_percentage": 15.7,
+      "total_transitions": 14
+    },
+    "restlessness_percentage": 6.2,
+    "insomnia": {
+      "score": 8,
+      "level": "low",
+      "episodes": []
+    }
+  }
+]
