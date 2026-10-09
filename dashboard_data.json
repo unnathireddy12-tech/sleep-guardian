@@ -1,11 +1,11 @@
 {
   "sleep_quality": "Poor",
-  "duration_minutes": 10.0,
-  "total_events": 148,
+  "duration_minutes": 9.9,
+  "total_events": 145,
   "snoring": {
-    "total_events": 46,
-    "total_duration_seconds": 87.0,
-    "total_duration_minutes": 1.4,
+    "total_events": 50,
+    "total_duration_seconds": 92.0,
+    "total_duration_minutes": 1.5,
     "events": [
       {
         "start": 0.0,
@@ -260,42 +260,60 @@
         "confidence": 1.0
       },
       {
+        "start": 182.0,
+        "end": 186.0,
+        "duration": 4.0,
+        "confidence": 0.33
+      },
+      {
         "start": 205.0,
         "end": 210.0,
         "duration": 5.0,
         "confidence": 0.33
       },
       {
-        "start": 210.0,
+        "start": 211.0,
         "end": 212.0,
-        "duration": 2.0,
+        "duration": 1.0,
         "confidence": 1.0
       },
       {
-        "start": 244.0,
-        "end": 249.0,
-        "duration": 5.0,
+        "start": 257.0,
+        "end": 258.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 261.0,
+        "end": 264.0,
+        "duration": 3.0,
         "confidence": 0.33
       },
       {
-        "start": 296.0,
-        "end": 299.0,
+        "start": 283.0,
+        "end": 284.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 287.0,
+        "end": 290.0,
         "duration": 3.0,
         "confidence": 0.33
+      },
+      {
+        "start": 297.0,
+        "end": 299.0,
+        "duration": 2.0,
+        "confidence": 1.0
       }
     ]
   },
   "sleep_talking": {
-    "total_events": 7,
-    "total_duration_seconds": 46.0,
-    "total_duration_minutes": 0.8,
+    "total_events": 5,
+    "total_duration_seconds": 32.0,
+    "total_duration_minutes": 0.5,
     "events": [
-      {
-        "start": 180.0,
-        "end": 186.0,
-        "duration": 6.0,
-        "confidence": 0.33
-      },
       {
         "start": 192.0,
         "end": 199.0,
@@ -303,63 +321,57 @@
         "confidence": 0.33
       },
       {
-        "start": 218.0,
+        "start": 219.0,
         "end": 225.0,
-        "duration": 7.0,
-        "confidence": 0.33
-      },
-      {
-        "start": 231.0,
-        "end": 237.0,
         "duration": 6.0,
         "confidence": 0.33
       },
       {
-        "start": 257.0,
-        "end": 264.0,
+        "start": 232.0,
+        "end": 238.0,
+        "duration": 6.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 244.0,
+        "end": 251.0,
         "duration": 7.0,
         "confidence": 0.33
       },
       {
-        "start": 270.0,
+        "start": 271.0,
         "end": 277.0,
-        "duration": 7.0,
-        "confidence": 0.33
-      },
-      {
-        "start": 284.0,
-        "end": 290.0,
         "duration": 6.0,
         "confidence": 0.33
       }
     ]
   },
   "position": {
-    "total_transitions": 59,
-    "current": "back",
+    "total_transitions": 54,
+    "current": "side_right",
     "breakdown": {
-      "back": {
-        "seconds": 220,
-        "minutes": 3.7,
-        "percentage": 36.7
-      },
-      "side_left": {
-        "seconds": 344,
-        "minutes": 5.7,
-        "percentage": 57.4
-      },
-      "side_right": {
-        "seconds": 35,
-        "minutes": 0.6,
-        "percentage": 5.8
-      },
       "stomach": {
         "seconds": 0,
         "minutes": 0.0,
         "percentage": 0.0
+      },
+      "side_right": {
+        "seconds": 31,
+        "minutes": 0.5,
+        "percentage": 5.2
+      },
+      "side_left": {
+        "seconds": 344,
+        "minutes": 5.7,
+        "percentage": 57.7
+      },
+      "back": {
+        "seconds": 221,
+        "minutes": 3.7,
+        "percentage": 37.1
       }
     },
-    "back_sleep_percentage": 36.7
+    "back_sleep_percentage": 37.1
   },
   "restlessness_percentage": 100.0,
   "insomnia": {
@@ -377,7 +389,7 @@
         "start_seconds": 5520,
         "end_seconds": 6210,
         "duration_minutes": 11.5,
-        "avg_intensity": 5.3
+        "avg_intensity": 5.55
       }
     ]
   },
@@ -859,8 +871,8 @@
     {
       "timestamp": 210,
       "time_formatted": "00:03:30",
-      "event_type": "sleep_talking",
-      "details": "Duration: 6.0s, ZCR: 0.0"
+      "event_type": "snoring",
+      "details": "Duration: 4.0s, ZCR: 0.0"
     },
     {
       "timestamp": 210,
@@ -878,43 +890,49 @@
       "timestamp": 240,
       "time_formatted": "00:04:00",
       "event_type": "snoring",
-      "details": "Duration: 2.0s, ZCR: 0.0"
-    },
-    {
-      "timestamp": 240,
-      "time_formatted": "00:04:00",
-      "event_type": "sleep_talking",
-      "details": "Duration: 7.0s, ZCR: 0.0"
+      "details": "Duration: 1.0s, ZCR: 0.0"
     },
     {
       "timestamp": 240,
       "time_formatted": "00:04:00",
       "event_type": "sleep_talking",
       "details": "Duration: 6.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 240,
+      "time_formatted": "00:04:00",
+      "event_type": "sleep_talking",
+      "details": "Duration: 6.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 270,
+      "time_formatted": "00:04:30",
+      "event_type": "sleep_talking",
+      "details": "Duration: 7.0s, ZCR: 0.0"
     },
     {
       "timestamp": 270,
       "time_formatted": "00:04:30",
       "event_type": "snoring",
-      "details": "Duration: 5.0s, ZCR: 0.0"
+      "details": "Duration: 1.0s, ZCR: 0.0"
     },
     {
       "timestamp": 270,
       "time_formatted": "00:04:30",
-      "event_type": "sleep_talking",
-      "details": "Duration: 7.0s, ZCR: 0.0"
-    },
-    {
-      "timestamp": 300,
-      "time_formatted": "00:05:00",
-      "event_type": "sleep_talking",
-      "details": "Duration: 7.0s, ZCR: 0.0"
+      "event_type": "snoring",
+      "details": "Duration: 3.0s, ZCR: 0.0"
     },
     {
       "timestamp": 300,
       "time_formatted": "00:05:00",
       "event_type": "sleep_talking",
       "details": "Duration: 6.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 300,
+      "time_formatted": "00:05:00",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
     },
     {
       "timestamp": 300,
@@ -923,62 +941,92 @@
       "details": "Duration: 3.0s, ZCR: 0.0"
     },
     {
-      "timestamp": 486,
-      "time_formatted": "00:08:06",
+      "timestamp": 300,
+      "time_formatted": "00:05:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 481,
+      "time_formatted": "00:08:01",
       "event_type": "position_change",
       "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 482,
+      "time_formatted": "00:08:02",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 484,
+      "time_formatted": "00:08:04",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 485,
+      "time_formatted": "00:08:05",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
     },
     {
       "timestamp": 487,
       "time_formatted": "00:08:07",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_right"
+      "details": "Position changed: side_left \u2192 back"
     },
     {
       "timestamp": 488,
       "time_formatted": "00:08:08",
       "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
+      "details": "Position changed: back \u2192 side_right"
     },
     {
       "timestamp": 489,
       "time_formatted": "00:08:09",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_right"
+      "details": "Position changed: side_right \u2192 back"
     },
     {
-      "timestamp": 492,
-      "time_formatted": "00:08:12",
+      "timestamp": 491,
+      "time_formatted": "00:08:11",
       "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 494,
+      "time_formatted": "00:08:14",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
     },
     {
       "timestamp": 495,
       "time_formatted": "00:08:15",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_right"
-    },
-    {
-      "timestamp": 496,
-      "time_formatted": "00:08:16",
-      "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
-    },
-    {
-      "timestamp": 497,
-      "time_formatted": "00:08:17",
-      "event_type": "position_change",
       "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 499,
+      "time_formatted": "00:08:19",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
     },
     {
       "timestamp": 500,
       "time_formatted": "00:08:20",
       "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
+      "details": "Position changed: back \u2192 side_left"
     },
     {
       "timestamp": 501,
       "time_formatted": "00:08:21",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 502,
+      "time_formatted": "00:08:22",
       "event_type": "position_change",
       "details": "Position changed: back \u2192 side_left"
     },
@@ -989,50 +1037,38 @@
       "details": "Position changed: side_left \u2192 back"
     },
     {
-      "timestamp": 505,
-      "time_formatted": "00:08:25",
+      "timestamp": 507,
+      "time_formatted": "00:08:27",
       "event_type": "position_change",
       "details": "Position changed: back \u2192 side_left"
     },
     {
-      "timestamp": 508,
-      "time_formatted": "00:08:28",
+      "timestamp": 509,
+      "time_formatted": "00:08:29",
       "event_type": "position_change",
       "details": "Position changed: side_left \u2192 back"
-    },
-    {
-      "timestamp": 510,
-      "time_formatted": "00:08:30",
-      "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
     },
     {
       "timestamp": 511,
       "time_formatted": "00:08:31",
       "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 513,
+      "time_formatted": "00:08:33",
+      "event_type": "position_change",
       "details": "Position changed: side_left \u2192 back"
     },
     {
-      "timestamp": 512,
-      "time_formatted": "00:08:32",
-      "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_right"
-    },
-    {
-      "timestamp": 514,
-      "time_formatted": "00:08:34",
-      "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
-    },
-    {
-      "timestamp": 515,
-      "time_formatted": "00:08:35",
+      "timestamp": 516,
+      "time_formatted": "00:08:36",
       "event_type": "position_change",
       "details": "Position changed: back \u2192 side_left"
     },
     {
-      "timestamp": 518,
-      "time_formatted": "00:08:38",
+      "timestamp": 519,
+      "time_formatted": "00:08:39",
       "event_type": "position_change",
       "details": "Position changed: side_left \u2192 back"
     },
@@ -1049,22 +1085,28 @@
       "details": "Position changed: side_right \u2192 back"
     },
     {
-      "timestamp": 529,
-      "time_formatted": "00:08:49",
-      "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
-    },
-    {
-      "timestamp": 536,
-      "time_formatted": "00:08:56",
-      "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
-    },
-    {
-      "timestamp": 537,
-      "time_formatted": "00:08:57",
+      "timestamp": 526,
+      "time_formatted": "00:08:46",
       "event_type": "position_change",
       "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 532,
+      "time_formatted": "00:08:52",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 533,
+      "time_formatted": "00:08:53",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 540,
+      "time_formatted": "00:09:00",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
     },
     {
       "timestamp": 540,
@@ -1076,43 +1118,49 @@
       "timestamp": 541,
       "time_formatted": "00:09:01",
       "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
-    },
-    {
-      "timestamp": 542,
-      "time_formatted": "00:09:02",
-      "event_type": "position_change",
       "details": "Position changed: back \u2192 side_left"
-    },
-    {
-      "timestamp": 544,
-      "time_formatted": "00:09:04",
-      "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
     },
     {
       "timestamp": 545,
       "time_formatted": "00:09:05",
       "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 547,
+      "time_formatted": "00:09:07",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 551,
+      "time_formatted": "00:09:11",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 552,
+      "time_formatted": "00:09:12",
+      "event_type": "position_change",
       "details": "Position changed: back \u2192 side_right"
     },
     {
-      "timestamp": 548,
-      "time_formatted": "00:09:08",
+      "timestamp": 555,
+      "time_formatted": "00:09:15",
       "event_type": "position_change",
       "details": "Position changed: side_right \u2192 back"
     },
     {
-      "timestamp": 549,
-      "time_formatted": "00:09:09",
+      "timestamp": 557,
+      "time_formatted": "00:09:17",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_right"
+      "details": "Position changed: back \u2192 side_left"
     },
     {
-      "timestamp": 559,
-      "time_formatted": "00:09:19",
+      "timestamp": 558,
+      "time_formatted": "00:09:18",
       "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
+      "details": "Position changed: side_left \u2192 back"
     },
     {
       "timestamp": 560,
@@ -1121,58 +1169,34 @@
       "details": "Position changed: back \u2192 side_left"
     },
     {
-      "timestamp": 562,
-      "time_formatted": "00:09:22",
-      "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
-    },
-    {
-      "timestamp": 563,
-      "time_formatted": "00:09:23",
-      "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
-    },
-    {
-      "timestamp": 564,
-      "time_formatted": "00:09:24",
-      "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
-    },
-    {
       "timestamp": 566,
       "time_formatted": "00:09:26",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
+      "details": "Position changed: side_left \u2192 back"
     },
     {
       "timestamp": 567,
       "time_formatted": "00:09:27",
       "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
+      "details": "Position changed: back \u2192 side_right"
     },
     {
-      "timestamp": 568,
-      "time_formatted": "00:09:28",
+      "timestamp": 570,
+      "time_formatted": "00:09:30",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
+      "details": "Position changed: side_right \u2192 back"
     },
     {
       "timestamp": 571,
       "time_formatted": "00:09:31",
       "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
+      "details": "Position changed: back \u2192 side_left"
     },
     {
       "timestamp": 572,
       "time_formatted": "00:09:32",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_right"
-    },
-    {
-      "timestamp": 573,
-      "time_formatted": "00:09:33",
-      "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
+      "details": "Position changed: side_left \u2192 back"
     },
     {
       "timestamp": 574,
@@ -1181,58 +1205,34 @@
       "details": "Position changed: back \u2192 side_left"
     },
     {
-      "timestamp": 578,
-      "time_formatted": "00:09:38",
+      "timestamp": 576,
+      "time_formatted": "00:09:36",
       "event_type": "position_change",
       "details": "Position changed: side_left \u2192 back"
     },
     {
-      "timestamp": 579,
-      "time_formatted": "00:09:39",
+      "timestamp": 577,
+      "time_formatted": "00:09:37",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_right"
-    },
-    {
-      "timestamp": 580,
-      "time_formatted": "00:09:40",
-      "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
+      "details": "Position changed: back \u2192 side_left"
     },
     {
       "timestamp": 581,
       "time_formatted": "00:09:41",
       "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
-    },
-    {
-      "timestamp": 583,
-      "time_formatted": "00:09:43",
-      "event_type": "position_change",
       "details": "Position changed: side_left \u2192 back"
     },
     {
-      "timestamp": 584,
-      "time_formatted": "00:09:44",
+      "timestamp": 582,
+      "time_formatted": "00:09:42",
       "event_type": "position_change",
       "details": "Position changed: back \u2192 side_right"
-    },
-    {
-      "timestamp": 586,
-      "time_formatted": "00:09:46",
-      "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
-    },
-    {
-      "timestamp": 587,
-      "time_formatted": "00:09:47",
-      "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
     },
     {
       "timestamp": 589,
       "time_formatted": "00:09:49",
       "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
+      "details": "Position changed: side_right \u2192 back"
     },
     {
       "timestamp": 590,
@@ -1247,28 +1247,22 @@
       "details": "Position changed: side_right \u2192 back"
     },
     {
-      "timestamp": 592,
-      "time_formatted": "00:09:52",
+      "timestamp": 594,
+      "time_formatted": "00:09:54",
       "event_type": "position_change",
       "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 595,
+      "time_formatted": "00:09:55",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
     },
     {
       "timestamp": 596,
       "time_formatted": "00:09:56",
       "event_type": "position_change",
-      "details": "Position changed: side_right \u2192 back"
-    },
-    {
-      "timestamp": 598,
-      "time_formatted": "00:09:58",
-      "event_type": "position_change",
-      "details": "Position changed: back \u2192 side_left"
-    },
-    {
-      "timestamp": 599,
-      "time_formatted": "00:09:59",
-      "event_type": "position_change",
-      "details": "Position changed: side_left \u2192 back"
+      "details": "Position changed: back \u2192 side_right"
     }
   ]
 }
