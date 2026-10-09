@@ -1,1 +1,1274 @@
-{"sleep_quality":"Poor","duration_minutes":10.0,"total_events":138,"snoring":{"total_events":45,"total_duration_seconds":80.0,"total_duration_minutes":1.3,"events":[{"start":0.0,"end":1.0,"duration":1.0,"confidence":1.0},{"start":4.0,"end":6.0,"duration":2.0,"confidence":1.0},{"start":9.0,"end":11.0,"duration":2.0,"confidence":1.0},{"start":14.0,"end":16.0,"duration":2.0,"confidence":1.0},{"start":19.0,"end":21.0,"duration":2.0,"confidence":1.0},{"start":24.0,"end":26.0,"duration":2.0,"confidence":1.0},{"start":29.0,"end":30.0,"duration":1.0,"confidence":1.0},{"start":30.0,"end":31.0,"duration":1.0,"confidence":1.0},{"start":34.0,"end":36.0,"duration":2.0,"confidence":1.0},{"start":39.0,"end":41.0,"duration":2.0,"confidence":1.0},{"start":44.0,"end":46.0,"duration":2.0,"confidence":1.0},{"start":49.0,"end":51.0,"duration":2.0,"confidence":1.0},{"start":54.0,"end":56.0,"duration":2.0,"confidence":1.0},{"start":59.0,"end":60.0,"duration":1.0,"confidence":1.0},{"start":60.0,"end":61.0,"duration":1.0,"confidence":1.0},{"start":64.0,"end":66.0,"duration":2.0,"confidence":1.0},{"start":69.0,"end":71.0,"duration":2.0,"confidence":1.0},{"start":74.0,"end":76.0,"duration":2.0,"confidence":1.0},{"start":79.0,"end":81.0,"duration":2.0,"confidence":1.0},{"start":84.0,"end":86.0,"duration":2.0,"confidence":1.0},{"start":89.0,"end":90.0,"duration":1.0,"confidence":1.0},{"start":90.0,"end":91.0,"duration":1.0,"confidence":1.0},{"start":94.0,"end":96.0,"duration":2.0,"confidence":1.0},{"start":99.0,"end":101.0,"duration":2.0,"confidence":1.0},{"start":104.0,"end":106.0,"duration":2.0,"confidence":1.0},{"start":109.0,"end":111.0,"duration":2.0,"confidence":1.0},{"start":114.0,"end":116.0,"duration":2.0,"confidence":1.0},{"start":119.0,"end":120.0,"duration":1.0,"confidence":1.0},{"start":120.0,"end":121.0,"duration":1.0,"confidence":1.0},{"start":124.0,"end":126.0,"duration":2.0,"confidence":1.0},{"start":129.0,"end":131.0,"duration":2.0,"confidence":1.0},{"start":134.0,"end":136.0,"duration":2.0,"confidence":1.0},{"start":139.0,"end":141.0,"duration":2.0,"confidence":1.0},{"start":144.0,"end":146.0,"duration":2.0,"confidence":1.0},{"start":149.0,"end":150.0,"duration":1.0,"confidence":1.0},{"start":150.0,"end":151.0,"duration":1.0,"confidence":1.0},{"start":154.0,"end":156.0,"duration":2.0,"confidence":1.0},{"start":159.0,"end":161.0,"duration":2.0,"confidence":1.0},{"start":164.0,"end":166.0,"duration":2.0,"confidence":1.0},{"start":169.0,"end":171.0,"duration":2.0,"confidence":1.0},{"start":174.0,"end":176.0,"duration":2.0,"confidence":1.0},{"start":179.0,"end":180.0,"duration":1.0,"confidence":1.0},{"start":205.0,"end":210.0,"duration":5.0,"confidence":0.33},{"start":210.0,"end":212.0,"duration":2.0,"confidence":1.0},{"start":297.0,"end":298.0,"duration":1.0,"confidence":1.0}]},"sleep_talking":{"total_events":8,"total_duration_seconds":54.0,"total_duration_minutes":0.9,"events":[{"start":180.0,"end":186.0,"duration":6.0,"confidence":0.33},{"start":192.0,"end":198.0,"duration":6.0,"confidence":0.33},{"start":218.0,"end":225.0,"duration":7.0,"confidence":0.33},{"start":231.0,"end":238.0,"duration":7.0,"confidence":0.33},{"start":244.0,"end":251.0,"duration":7.0,"confidence":0.33},{"start":257.0,"end":264.0,"duration":7.0,"confidence":0.33},{"start":270.0,"end":277.0,"duration":7.0,"confidence":0.33},{"start":283.0,"end":290.0,"duration":7.0,"confidence":0.33}]},"position":{"total_transitions":49,"current":"back","breakdown":{"stomach":{"seconds":0,"minutes":0.0,"percentage":0.0},"back":{"seconds":216,"minutes":3.6,"percentage":36.1},"side_left":{"seconds":342,"minutes":5.7,"percentage":57.1},"side_right":{"seconds":41,"minutes":0.7,"percentage":6.8}},"back_sleep_percentage":36.1},"restlessness_percentage":100.0,"timeline":[{"timestamp":0,"time_formatted":"00:00:00","event_type":"position_change","details":"Position changed: unknown → back"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":30,"time_formatted":"00:00:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":60,"time_formatted":"00:01:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":90,"time_formatted":"00:01:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":120,"time_formatted":"00:02:00","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":150,"time_formatted":"00:02:30","event_type":"vibration_triggered","details":"Nudge to shift position"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":180,"time_formatted":"00:03:00","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":210,"time_formatted":"00:03:30","event_type":"sleep_talking","details":"Duration: 6.0s, ZCR: 0.0"},{"timestamp":210,"time_formatted":"00:03:30","event_type":"sleep_talking","details":"Duration: 6.0s, ZCR: 0.0"},{"timestamp":210,"time_formatted":"00:03:30","event_type":"snoring","details":"Duration: 5.0s, ZCR: 0.0"},{"timestamp":240,"time_formatted":"00:04:00","event_type":"snoring","details":"Duration: 2.0s, ZCR: 0.0"},{"timestamp":240,"time_formatted":"00:04:00","event_type":"sleep_talking","details":"Duration: 7.0s, ZCR: 0.0"},{"timestamp":240,"time_formatted":"00:04:00","event_type":"sleep_talking","details":"Duration: 7.0s, ZCR: 0.0"},{"timestamp":270,"time_formatted":"00:04:30","event_type":"sleep_talking","details":"Duration: 7.0s, ZCR: 0.0"},{"timestamp":270,"time_formatted":"00:04:30","event_type":"sleep_talking","details":"Duration: 7.0s, ZCR: 0.0"},{"timestamp":300,"time_formatted":"00:05:00","event_type":"sleep_talking","details":"Duration: 7.0s, ZCR: 0.0"},{"timestamp":300,"time_formatted":"00:05:00","event_type":"sleep_talking","details":"Duration: 7.0s, ZCR: 0.0"},{"timestamp":300,"time_formatted":"00:05:00","event_type":"snoring","details":"Duration: 1.0s, ZCR: 0.0"},{"timestamp":484,"time_formatted":"00:08:04","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":485,"time_formatted":"00:08:05","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":487,"time_formatted":"00:08:07","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":488,"time_formatted":"00:08:08","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":490,"time_formatted":"00:08:10","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":492,"time_formatted":"00:08:12","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":495,"time_formatted":"00:08:15","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":497,"time_formatted":"00:08:17","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":499,"time_formatted":"00:08:19","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":500,"time_formatted":"00:08:20","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":502,"time_formatted":"00:08:22","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":503,"time_formatted":"00:08:23","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":506,"time_formatted":"00:08:26","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":508,"time_formatted":"00:08:28","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":512,"time_formatted":"00:08:32","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":515,"time_formatted":"00:08:35","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":523,"time_formatted":"00:08:43","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":524,"time_formatted":"00:08:44","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":525,"time_formatted":"00:08:45","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":527,"time_formatted":"00:08:47","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":528,"time_formatted":"00:08:48","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":530,"time_formatted":"00:08:50","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":531,"time_formatted":"00:08:51","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":534,"time_formatted":"00:08:54","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":538,"time_formatted":"00:08:58","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":539,"time_formatted":"00:08:59","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":540,"time_formatted":"00:09:00","event_type":"restless","details":"100.0% restless in last 60s"},{"timestamp":546,"time_formatted":"00:09:06","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":547,"time_formatted":"00:09:07","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":552,"time_formatted":"00:09:12","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":553,"time_formatted":"00:09:13","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":557,"time_formatted":"00:09:17","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":561,"time_formatted":"00:09:21","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":563,"time_formatted":"00:09:23","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":564,"time_formatted":"00:09:24","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":565,"time_formatted":"00:09:25","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":566,"time_formatted":"00:09:26","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":567,"time_formatted":"00:09:27","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":568,"time_formatted":"00:09:28","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":572,"time_formatted":"00:09:32","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":574,"time_formatted":"00:09:34","event_type":"position_change","details":"Position changed: back → side_left"},{"timestamp":575,"time_formatted":"00:09:35","event_type":"position_change","details":"Position changed: side_left → back"},{"timestamp":576,"time_formatted":"00:09:36","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":578,"time_formatted":"00:09:38","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":579,"time_formatted":"00:09:39","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":597,"time_formatted":"00:09:57","event_type":"position_change","details":"Position changed: side_right → back"},{"timestamp":598,"time_formatted":"00:09:58","event_type":"position_change","details":"Position changed: back → side_right"},{"timestamp":599,"time_formatted":"00:09:59","event_type":"position_change","details":"Position changed: side_right → back"}]}
+{
+  "sleep_quality": "Poor",
+  "duration_minutes": 10.0,
+  "total_events": 148,
+  "snoring": {
+    "total_events": 46,
+    "total_duration_seconds": 87.0,
+    "total_duration_minutes": 1.4,
+    "events": [
+      {
+        "start": 0.0,
+        "end": 1.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 4.0,
+        "end": 6.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 9.0,
+        "end": 11.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 14.0,
+        "end": 16.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 19.0,
+        "end": 21.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 24.0,
+        "end": 26.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 29.0,
+        "end": 30.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 30.0,
+        "end": 31.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 34.0,
+        "end": 36.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 39.0,
+        "end": 41.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 44.0,
+        "end": 46.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 49.0,
+        "end": 51.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 54.0,
+        "end": 56.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 59.0,
+        "end": 60.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 60.0,
+        "end": 61.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 64.0,
+        "end": 66.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 69.0,
+        "end": 71.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 74.0,
+        "end": 76.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 79.0,
+        "end": 81.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 84.0,
+        "end": 86.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 89.0,
+        "end": 90.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 90.0,
+        "end": 91.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 94.0,
+        "end": 96.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 99.0,
+        "end": 101.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 104.0,
+        "end": 106.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 109.0,
+        "end": 111.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 114.0,
+        "end": 116.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 119.0,
+        "end": 120.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 120.0,
+        "end": 121.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 124.0,
+        "end": 126.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 129.0,
+        "end": 131.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 134.0,
+        "end": 136.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 139.0,
+        "end": 141.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 144.0,
+        "end": 146.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 149.0,
+        "end": 150.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 150.0,
+        "end": 151.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 154.0,
+        "end": 156.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 159.0,
+        "end": 161.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 164.0,
+        "end": 166.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 169.0,
+        "end": 171.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 174.0,
+        "end": 176.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 179.0,
+        "end": 180.0,
+        "duration": 1.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 205.0,
+        "end": 210.0,
+        "duration": 5.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 210.0,
+        "end": 212.0,
+        "duration": 2.0,
+        "confidence": 1.0
+      },
+      {
+        "start": 244.0,
+        "end": 249.0,
+        "duration": 5.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 296.0,
+        "end": 299.0,
+        "duration": 3.0,
+        "confidence": 0.33
+      }
+    ]
+  },
+  "sleep_talking": {
+    "total_events": 7,
+    "total_duration_seconds": 46.0,
+    "total_duration_minutes": 0.8,
+    "events": [
+      {
+        "start": 180.0,
+        "end": 186.0,
+        "duration": 6.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 192.0,
+        "end": 199.0,
+        "duration": 7.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 218.0,
+        "end": 225.0,
+        "duration": 7.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 231.0,
+        "end": 237.0,
+        "duration": 6.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 257.0,
+        "end": 264.0,
+        "duration": 7.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 270.0,
+        "end": 277.0,
+        "duration": 7.0,
+        "confidence": 0.33
+      },
+      {
+        "start": 284.0,
+        "end": 290.0,
+        "duration": 6.0,
+        "confidence": 0.33
+      }
+    ]
+  },
+  "position": {
+    "total_transitions": 59,
+    "current": "back",
+    "breakdown": {
+      "back": {
+        "seconds": 220,
+        "minutes": 3.7,
+        "percentage": 36.7
+      },
+      "side_left": {
+        "seconds": 344,
+        "minutes": 5.7,
+        "percentage": 57.4
+      },
+      "side_right": {
+        "seconds": 35,
+        "minutes": 0.6,
+        "percentage": 5.8
+      },
+      "stomach": {
+        "seconds": 0,
+        "minutes": 0.0,
+        "percentage": 0.0
+      }
+    },
+    "back_sleep_percentage": 36.7
+  },
+  "restlessness_percentage": 100.0,
+  "insomnia": {
+    "score": 54,
+    "level": "moderate",
+    "factors": {
+      "restless_ratio": 11.1,
+      "longest_streak_minutes": 11.5,
+      "episode_count": 1
+    },
+    "episodes": [
+      {
+        "start_window": 368,
+        "end_window": 413,
+        "start_seconds": 5520,
+        "end_seconds": 6210,
+        "duration_minutes": 11.5,
+        "avg_intensity": 5.3
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "timestamp": 0,
+      "time_formatted": "00:00:00",
+      "event_type": "position_change",
+      "details": "Position changed: unknown \u2192 back"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 30,
+      "time_formatted": "00:00:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 60,
+      "time_formatted": "00:01:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 90,
+      "time_formatted": "00:01:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 120,
+      "time_formatted": "00:02:00",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 150,
+      "time_formatted": "00:02:30",
+      "event_type": "vibration_triggered",
+      "details": "Nudge to shift position"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 180,
+      "time_formatted": "00:03:00",
+      "event_type": "snoring",
+      "details": "Duration: 1.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 210,
+      "time_formatted": "00:03:30",
+      "event_type": "sleep_talking",
+      "details": "Duration: 6.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 210,
+      "time_formatted": "00:03:30",
+      "event_type": "sleep_talking",
+      "details": "Duration: 7.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 210,
+      "time_formatted": "00:03:30",
+      "event_type": "snoring",
+      "details": "Duration: 5.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 240,
+      "time_formatted": "00:04:00",
+      "event_type": "snoring",
+      "details": "Duration: 2.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 240,
+      "time_formatted": "00:04:00",
+      "event_type": "sleep_talking",
+      "details": "Duration: 7.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 240,
+      "time_formatted": "00:04:00",
+      "event_type": "sleep_talking",
+      "details": "Duration: 6.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 270,
+      "time_formatted": "00:04:30",
+      "event_type": "snoring",
+      "details": "Duration: 5.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 270,
+      "time_formatted": "00:04:30",
+      "event_type": "sleep_talking",
+      "details": "Duration: 7.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 300,
+      "time_formatted": "00:05:00",
+      "event_type": "sleep_talking",
+      "details": "Duration: 7.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 300,
+      "time_formatted": "00:05:00",
+      "event_type": "sleep_talking",
+      "details": "Duration: 6.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 300,
+      "time_formatted": "00:05:00",
+      "event_type": "snoring",
+      "details": "Duration: 3.0s, ZCR: 0.0"
+    },
+    {
+      "timestamp": 486,
+      "time_formatted": "00:08:06",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 487,
+      "time_formatted": "00:08:07",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 488,
+      "time_formatted": "00:08:08",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 489,
+      "time_formatted": "00:08:09",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 492,
+      "time_formatted": "00:08:12",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 495,
+      "time_formatted": "00:08:15",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 496,
+      "time_formatted": "00:08:16",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 497,
+      "time_formatted": "00:08:17",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 500,
+      "time_formatted": "00:08:20",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 501,
+      "time_formatted": "00:08:21",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 504,
+      "time_formatted": "00:08:24",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 505,
+      "time_formatted": "00:08:25",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 508,
+      "time_formatted": "00:08:28",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 510,
+      "time_formatted": "00:08:30",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 511,
+      "time_formatted": "00:08:31",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 512,
+      "time_formatted": "00:08:32",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 514,
+      "time_formatted": "00:08:34",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 515,
+      "time_formatted": "00:08:35",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 518,
+      "time_formatted": "00:08:38",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 521,
+      "time_formatted": "00:08:41",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 523,
+      "time_formatted": "00:08:43",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 529,
+      "time_formatted": "00:08:49",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 536,
+      "time_formatted": "00:08:56",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 537,
+      "time_formatted": "00:08:57",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 540,
+      "time_formatted": "00:09:00",
+      "event_type": "restless",
+      "details": "100.0% restless in last 60s"
+    },
+    {
+      "timestamp": 541,
+      "time_formatted": "00:09:01",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 542,
+      "time_formatted": "00:09:02",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 544,
+      "time_formatted": "00:09:04",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 545,
+      "time_formatted": "00:09:05",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 548,
+      "time_formatted": "00:09:08",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 549,
+      "time_formatted": "00:09:09",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 559,
+      "time_formatted": "00:09:19",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 560,
+      "time_formatted": "00:09:20",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 562,
+      "time_formatted": "00:09:22",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 563,
+      "time_formatted": "00:09:23",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 564,
+      "time_formatted": "00:09:24",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 566,
+      "time_formatted": "00:09:26",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 567,
+      "time_formatted": "00:09:27",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 568,
+      "time_formatted": "00:09:28",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 571,
+      "time_formatted": "00:09:31",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 572,
+      "time_formatted": "00:09:32",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 573,
+      "time_formatted": "00:09:33",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 574,
+      "time_formatted": "00:09:34",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 578,
+      "time_formatted": "00:09:38",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 579,
+      "time_formatted": "00:09:39",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 580,
+      "time_formatted": "00:09:40",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 581,
+      "time_formatted": "00:09:41",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 583,
+      "time_formatted": "00:09:43",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 584,
+      "time_formatted": "00:09:44",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 586,
+      "time_formatted": "00:09:46",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 587,
+      "time_formatted": "00:09:47",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 589,
+      "time_formatted": "00:09:49",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    },
+    {
+      "timestamp": 590,
+      "time_formatted": "00:09:50",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 591,
+      "time_formatted": "00:09:51",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 592,
+      "time_formatted": "00:09:52",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_right"
+    },
+    {
+      "timestamp": 596,
+      "time_formatted": "00:09:56",
+      "event_type": "position_change",
+      "details": "Position changed: side_right \u2192 back"
+    },
+    {
+      "timestamp": 598,
+      "time_formatted": "00:09:58",
+      "event_type": "position_change",
+      "details": "Position changed: back \u2192 side_left"
+    },
+    {
+      "timestamp": 599,
+      "time_formatted": "00:09:59",
+      "event_type": "position_change",
+      "details": "Position changed: side_left \u2192 back"
+    }
+  ]
+}

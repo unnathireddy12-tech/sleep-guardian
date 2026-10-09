@@ -19,6 +19,7 @@
     --restless: #F59E0B;
     --good: #10B981;
     --ring-track: #E5E3DE;
+    --insomnia: #EC4899;
     font-family: 'DM Sans', system-ui, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
@@ -35,6 +36,7 @@
       --restless: #FBBF24;
       --good: #34D399;
       --ring-track: #2A2A2A;
+      --insomnia: #F472B6;
       color-scheme: dark;
     }
   }
@@ -51,6 +53,7 @@
     --restless: #FBBF24;
     --good: #34D399;
     --ring-track: #2A2A2A;
+    --insomnia: #F472B6;
     color-scheme: dark;
   }
   body {
@@ -134,6 +137,60 @@
   .color-talk { color: var(--talk); }
   .color-restless { color: var(--restless); }
   .color-accent { color: var(--accent); }
+  .color-insomnia { color: var(--insomnia); }
+
+  .risk-meter { margin-bottom: 16px; }
+  .risk-track {
+    height: 10px;
+    background: var(--ring-track);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .risk-fill {
+    height: 100%;
+    border-radius: 5px;
+    background: var(--insomnia);
+    transition: width 0.4s ease;
+  }
+  .risk-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+  }
+  .insomnia-ep {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .insomnia-ep:last-child { border-bottom: none; }
+  .ep-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--insomnia) 15%, transparent);
+    color: var(--insomnia);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .ep-details { flex: 1; min-width: 0; }
+  .ep-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+  }
+  .ep-dur {
+    font-size: 0.72rem;
+    color: var(--fg-muted);
+  }
 
   .section {
     margin-top: 28px;
@@ -394,6 +451,37 @@
   </div>
 </div>
 
+<div class="section" id="insomnia-section" hidden>
+  <div class="section-title"><span class="dot" style="background:var(--insomnia)"></span> Insomnia Detection</div>
+  <div class="event-card" style="padding:20px">
+    <div class="risk-meter">
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="stat-value color-insomnia" id="insomnia-score">0</span>
+        <span class="stat-unit">/100</span>
+        <span class="quality-badge" id="insomnia-level">low</span>
+      </div>
+      <div class="risk-track"><div class="risk-fill" id="risk-fill" style="width:0%"></div></div>
+      <div class="risk-label"><span>Low</span><span>Moderate</span><span>High</span></div>
+    </div>
+    <div class="stats" style="margin-top:0">
+      <div class="stat-card">
+        <span class="stat-label">Restless Ratio</span>
+        <span class="stat-value" id="ins-ratio">0<small>%</small></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Longest Streak</span>
+        <span class="stat-value" id="ins-streak">0<small> min</small></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Episodes</span>
+        <span class="stat-value" id="ins-episodes">0</span>
+      </div>
+    </div>
+    <div id="insomnia-ep-list" style="margin-top:12px"></div>
+    <div class="warning-strip" id="insomnia-warning" hidden></div>
+  </div>
+</div>
+
 <div class="footer">
   <span>Circular Buffer</span><span class="pipe">·</span>
   <span>Sliding Window</span><span class="pipe">·</span>
@@ -402,7 +490,8 @@
   <span>Linked List</span><span class="pipe">·</span>
   <span>Peak Finding</span><span class="pipe">·</span>
   <span>State Machine</span><span class="pipe">·</span>
-  <span>Sound Classifier (ZCR)</span>
+  <span>Sound Classifier (ZCR)</span><span class="pipe">·</span>
+  <span>Insomnia Detector (RLE)</span>
 </div>
 
 <script>
@@ -552,6 +641,51 @@
       var warn = document.getElementById('back-warning');
       warn.hidden = false;
       warn.textContent = 'Back sleeping made up ' + backPct + '% of the session — primary risk factor for snoring. Vibration motor intervened during back+snoring events.';
+    }
+
+    if (data.insomnia && data.insomnia.score !== undefined) {
+      var ins = data.insomnia;
+      document.getElementById('insomnia-section').hidden = false;
+      document.getElementById('insomnia-score').textContent = ins.score;
+      document.getElementById('risk-fill').style.width = ins.score + '%';
+
+      var lvlBadge = document.getElementById('insomnia-level');
+      lvlBadge.textContent = ins.level;
+      lvlBadge.className = 'quality-badge quality-' +
+        (ins.level === 'high' ? 'poor' : ins.level === 'moderate' ? 'fair' : 'good');
+
+      var factors = ins.factors || {};
+      document.getElementById('ins-ratio').innerHTML =
+        (factors.restless_ratio || 0) + '<small>%</small>';
+      document.getElementById('ins-streak').innerHTML =
+        (factors.longest_streak_minutes || 0) + '<small> min</small>';
+      document.getElementById('ins-episodes').textContent =
+        factors.episode_count || 0;
+
+      var epList = document.getElementById('insomnia-ep-list');
+      var episodes = ins.episodes || [];
+      var epHtml = '';
+      for (var i = 0; i < episodes.length; i++) {
+        var ep = episodes[i];
+        epHtml += '<div class="insomnia-ep">' +
+          '<div class="ep-badge">' + (i + 1) + '</div>' +
+          '<div class="ep-details">' +
+          '<div class="ep-time">' + fmtTime(ep.start_seconds) + ' – ' + fmtTime(ep.end_seconds) + '</div>' +
+          '<div class="ep-dur">' + ep.duration_minutes + ' min · intensity ' + ep.avg_intensity + '</div>' +
+          '</div></div>';
+      }
+      epList.innerHTML = epHtml;
+
+      if (ins.level === 'high' || ins.level === 'moderate') {
+        var iw = document.getElementById('insomnia-warning');
+        iw.hidden = false;
+        iw.style.background = 'color-mix(in srgb, var(--insomnia) 10%, transparent)';
+        iw.style.color = 'var(--insomnia)';
+        iw.style.borderColor = 'color-mix(in srgb, var(--insomnia) 20%, transparent)';
+        iw.textContent = ins.level === 'high'
+          ? 'High insomnia risk detected — prolonged restless periods suggest difficulty falling or staying asleep.'
+          : 'Moderate insomnia indicators — some extended restless periods detected during the session.';
+      }
     }
   }
 })();

@@ -26,6 +26,9 @@ from dsa.event_log import EventLog
 from dsa.peak_finder import detect_snoring, compute_baseline
 from dsa.state_machine import SleepPositionStateMachine
 from dsa.sound_classifier import SoundClassifier
+from dsa.insomnia_detector import (
+    detect_insomnia_episodes, insomnia_risk_score, run_length_encode
+)
 
 
 # ===================================================================
@@ -51,6 +54,9 @@ position_tracker = SleepPositionStateMachine()
 
 # Sound Classifier — differentiates snoring vs sleep talking (Task 8)
 sound_classifier = SoundClassifier()
+
+# Insomnia Detection — accumulates all movement classifications (Task 9)
+all_movement_classifications = []
 
 
 # ===================================================================
@@ -196,6 +202,8 @@ def process_reading(timestamp, reading):
         )
         restless_pct = restlessness_percentage(classifications)
 
+        all_movement_classifications.extend(classifications)
+
         if restless_pct > 50:
             alert_queue.push(SleepEvent(
                 "restless_period", priority=1,
@@ -205,6 +213,33 @@ def process_reading(timestamp, reading):
             event_log.append(timestamp, "restless",
                              f"{restless_pct}% restless in last 60s")
             actions_taken.append(f"\U0001f7e0 RESTLESS: {restless_pct}% of last 60s")
+
+    # --- Step 5b: Insomnia detection via RLE (Task 9) ---
+    if timestamp % 120 == 0 and len(all_movement_classifications) >= 8:
+        episodes = detect_insomnia_episodes(
+            all_movement_classifications, window_seconds=15, min_streak_minutes=2
+        )
+        for ep in episodes:
+            already_logged = any(
+                e[1] == "insomnia_episode" and
+                str(ep["start_seconds"]) in e[2]
+                for e in event_log.get_events("insomnia_episode")
+            )
+            if not already_logged:
+                alert_queue.push(SleepEvent(
+                    "insomnia_alert", priority=4,
+                    timestamp=timestamp,
+                    details=f"Restless streak: {ep['duration_minutes']} min"
+                ))
+                event_log.append(
+                    timestamp, "insomnia_episode",
+                    f"Streak from {ep['start_seconds']}s: "
+                    f"{ep['duration_minutes']} min, intensity={ep['avg_intensity']}"
+                )
+                actions_taken.append(
+                    f"\U0001f6a8 INSOMNIA: {ep['duration_minutes']} min "
+                    f"restless streak (intensity={ep['avg_intensity']})"
+                )
 
     # --- Step 6: Process alert queue (Task 3) ---
     while not alert_queue.is_empty():
@@ -230,12 +265,28 @@ def generate_dashboard_data():
     # event log summary
     log_summary = event_log.generate_summary()
 
-    # movement analysis
+    # movement analysis + insomnia detection
     restless_pct = 0.0
+    insomnia_data = {"score": 0, "level": "low", "factors": {}, "episodes": []}
     if len(accel_buffer) >= 30:
         accel_data = accel_buffer.get_latest()
         classifications = classify_movement(accel_data, window_size=15, threshold=4.0)
         restless_pct = restlessness_percentage(classifications)
+
+    if all_movement_classifications:
+        episodes = detect_insomnia_episodes(
+            all_movement_classifications, window_seconds=15, min_streak_minutes=2
+        )
+        duration_min = log_summary.get("duration_minutes", 0)
+        risk = insomnia_risk_score(
+            all_movement_classifications, episodes, max(duration_min, 1)
+        )
+        insomnia_data = {
+            "score": risk["score"],
+            "level": risk["level"],
+            "factors": risk["factors"],
+            "episodes": episodes,
+        }
 
     # build timeline of all events for the dashboard chart
     all_events = event_log.get_events()
@@ -278,6 +329,8 @@ def generate_dashboard_data():
         },
 
         "restlessness_percentage": restless_pct,
+
+        "insomnia": insomnia_data,
 
         "timeline": timeline,
     }
@@ -348,6 +401,26 @@ def run_simulation(duration_seconds=300, print_interval=30):
         final_restless = restlessness_percentage(final_movement)
         print(f"\n  Overall restlessness: {final_restless}%")
 
+    # insomnia detection
+    if all_movement_classifications:
+        episodes = detect_insomnia_episodes(
+            all_movement_classifications, window_seconds=15, min_streak_minutes=2
+        )
+        duration_min = summary.get("duration_minutes", 1)
+        risk = insomnia_risk_score(
+            all_movement_classifications, episodes, max(duration_min, 1)
+        )
+        print(f"\n--- Insomnia Detection (RLE) ---")
+        print(f"  Risk score: {risk['score']}/100 ({risk['level']})")
+        print(f"  Restless ratio: {risk['factors'].get('restless_ratio', 0)}%")
+        print(f"  Longest restless streak: {risk['factors'].get('longest_streak_minutes', 0)} min")
+        print(f"  Insomnia episodes: {len(episodes)}")
+        for i, ep in enumerate(episodes, 1):
+            m_start = int(ep['start_seconds'] // 60)
+            s_start = int(ep['start_seconds'] % 60)
+            print(f"    Episode {i}: {m_start:02d}:{s_start:02d} — "
+                  f"{ep['duration_minutes']} min (intensity={ep['avg_intensity']})")
+
     # generate dashboard JSON
     dashboard = generate_dashboard_data()
     with open("dashboard_data.json", "w") as f:
@@ -364,6 +437,7 @@ def run_simulation(duration_seconds=300, print_interval=30):
     print("    6. Peak Finding        — snoring pattern detection")
     print("    7. State Machine       — position tracking")
     print("    8. Sound Classifier    — snoring vs sleep talking (ZCR + burst + variance)")
+    print("    9. Insomnia Detector   — prolonged restlessness via run-length encoding")
     print("=" * 60)
 
     return dashboard
