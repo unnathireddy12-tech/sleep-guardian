@@ -9,14 +9,17 @@ Data Flow:
             → Signal Correlator → Priority Queue → Event Log
             → Morning Summary + Dashboard JSON
 
-This file simulates a full night of sleep data to demonstrate the pipeline.
-On real hardware, the simulate_sensor_reading() function gets replaced
-with actual serial reads from Arduino/ESP32.
+Usage:
+    python main.py              → simulation mode (demo with fake data)
+    python main.py --hardware   → real hardware mode (reads from Arduino/ESP32)
+    python main.py --port COM3  → specify serial port (default: auto-detect)
 """
 
 import json
 import math
 import random
+import sys
+import time
 
 from dsa.circular_buffer import CircularBuffer
 from dsa.sliding_window import classify_movement, restlessness_percentage
@@ -120,6 +123,68 @@ def simulate_sensor_reading(timestamp):
         "position": position,
         "accel_magnitude": round(movement, 2),
     }
+
+
+# ===================================================================
+# 2b. REAL HARDWARE SERIAL READER
+# ===================================================================
+
+def connect_serial(port=None, baud=9600):
+    """
+    Connect to Arduino/ESP32 over serial.
+    Auto-detects port if not specified.
+    Requires: pip install pyserial
+    """
+    try:
+        import serial
+        import serial.tools.list_ports
+    except ImportError:
+        print("ERROR: pyserial not installed.")
+        print("Run: pip install pyserial")
+        sys.exit(1)
+
+    if port:
+        ser = serial.Serial(port, baud, timeout=2)
+        print(f"  Connected to {port}")
+        return ser
+
+    ports = list(serial.tools.list_ports.comports())
+    if not ports:
+        print("ERROR: No serial ports found. Is Arduino plugged in?")
+        sys.exit(1)
+
+    print("  Available ports:")
+    for p in ports:
+        print(f"    {p.device} — {p.description}")
+
+    for p in ports:
+        desc = p.description.lower()
+        if any(k in desc for k in ["arduino", "esp32", "ch340", "cp210", "usb"]):
+            ser = serial.Serial(p.device, baud, timeout=2)
+            print(f"  Auto-connected to {p.device}")
+            return ser
+
+    ser = serial.Serial(ports[0].device, baud, timeout=2)
+    print(f"  Connected to {ports[0].device}")
+    return ser
+
+
+def read_serial_line(ser):
+    """
+    Read one JSON line from Arduino and parse it.
+    Expected format: {"sound":52.3,"pressure":612.0,"position":"back","accel_magnitude":1.45}
+    """
+    try:
+        line = ser.readline().decode("utf-8").strip()
+        if not line:
+            return None
+        data = json.loads(line)
+        required = ["sound", "pressure", "position", "accel_magnitude"]
+        if all(k in data for k in required):
+            return data
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        pass
+    return None
 
 
 # ===================================================================
@@ -444,8 +509,133 @@ def run_simulation(duration_seconds=300, print_interval=30):
 
 
 # ===================================================================
+# 6. RUN WITH REAL HARDWARE
+# ===================================================================
+
+def run_hardware(port=None, print_interval=30):
+    """
+    Run Sleep Guardian with real sensor data from Arduino/ESP32.
+    Press Ctrl+C to stop and generate the morning summary.
+    """
+    print("=" * 60)
+    print("  Sleep Guardian — Live Hardware Mode")
+    print("=" * 60)
+    print("\n  Connecting to Arduino/ESP32...")
+
+    ser = connect_serial(port)
+    time.sleep(2)  # wait for Arduino to reset after serial connect
+    ser.flushInput()
+
+    print("\n  Recording sleep data... Press Ctrl+C to stop.\n")
+
+    t = 0
+    try:
+        while True:
+            reading = read_serial_line(ser)
+            if reading is None:
+                continue
+
+            actions = process_reading(t, reading)
+
+            if t % print_interval == 0 and t > 0:
+                mins = t // 60
+                secs = t % 60
+                print(f"[{mins:02d}:{secs:02d}] "
+                      f"Position: {position_tracker.get_current_position():>10} | "
+                      f"Sound: {reading['sound']:5.1f} | "
+                      f"Movement: {reading['accel_magnitude']:4.2f}")
+                for action in actions:
+                    print(f"         → {action}")
+
+            t += 1
+            time.sleep(1)
+
+    except KeyboardInterrupt:
+        print(f"\n\n  Stopped after {t // 60} min {t % 60} sec")
+
+    ser.close()
+
+    # --- Morning Summary (same as simulation) ---
+    print("\n" + "=" * 60)
+    print("  Morning Sleep Summary")
+    print("=" * 60)
+
+    summary = event_log.generate_summary()
+    print(f"\n{summary['summary']}")
+    sound_classifier.print_report()
+
+    pos_stats = position_tracker.get_position_stats()
+    print(f"\n--- Position Analysis ---")
+    print(f"  Total position changes: {pos_stats['total_transitions']}")
+    for pos, data in pos_stats["positions"].items():
+        if data["seconds"] > 0:
+            print(f"  {pos:>12}: {data['minutes']} min ({data['percentage']}%)")
+
+    back_pct = position_tracker.get_back_sleep_percentage()
+    print(f"\n  Back-sleep percentage: {back_pct}%")
+    if back_pct > 50:
+        print("  High back-sleep time — primary snoring risk factor")
+
+    if len(accel_buffer) >= 30:
+        final_movement = classify_movement(
+            accel_buffer.get_latest(), window_size=15, threshold=4.0
+        )
+        final_restless = restlessness_percentage(final_movement)
+        print(f"\n  Overall restlessness: {final_restless}%")
+
+    if all_movement_classifications:
+        episodes = detect_insomnia_episodes(
+            all_movement_classifications, window_seconds=15, min_streak_minutes=2
+        )
+        duration_min = summary.get("duration_minutes", 1)
+        risk = insomnia_risk_score(
+            all_movement_classifications, episodes, max(duration_min, 1)
+        )
+        print(f"\n--- Insomnia Detection (RLE) ---")
+        print(f"  Risk score: {risk['score']}/100 ({risk['level']})")
+        print(f"  Restless ratio: {risk['factors'].get('restless_ratio', 0)}%")
+        print(f"  Longest restless streak: {risk['factors'].get('longest_streak_minutes', 0)} min")
+        print(f"  Insomnia episodes: {len(episodes)}")
+        for i, ep in enumerate(episodes, 1):
+            m_start = int(ep['start_seconds'] // 60)
+            s_start = int(ep['start_seconds'] % 60)
+            print(f"    Episode {i}: {m_start:02d}:{s_start:02d} — "
+                  f"{ep['duration_minutes']} min (intensity={ep['avg_intensity']})")
+
+    dashboard = generate_dashboard_data()
+    with open("dashboard_data.json", "w") as f:
+        json.dump(dashboard, f, indent=2)
+    print(f"\nDashboard data saved to dashboard_data.json")
+
+    print("\n" + "=" * 60)
+    print("  DSA components used:")
+    print("    1. Circular Buffer     — sensor data storage")
+    print("    2. Sliding Window      — movement classification")
+    print("    3. Priority Queue      — alert management")
+    print("    4. Hash Map            — signal correlation")
+    print("    5. Linked List         — event logging")
+    print("    6. Peak Finding        — snoring pattern detection")
+    print("    7. State Machine       — position tracking")
+    print("    8. Sound Classifier    — snoring vs sleep talking (ZCR + burst + variance)")
+    print("    9. Insomnia Detector   — prolonged restlessness via run-length encoding")
+    print("=" * 60)
+
+    return dashboard
+
+
+# ===================================================================
 # ENTRY POINT
 # ===================================================================
 
 if __name__ == "__main__":
-    dashboard = run_simulation(duration_seconds=600, print_interval=30)
+    args = sys.argv[1:]
+
+    if "--hardware" in args or "--hw" in args:
+        port = None
+        if "--port" in args:
+            idx = args.index("--port")
+            if idx + 1 < len(args):
+                port = args[idx + 1]
+        run_hardware(port=port)
+    else:
+        run_simulation(duration_seconds=600, print_interval=30)
