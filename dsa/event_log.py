@@ -4,15 +4,16 @@ Event Log using Linked List for Sleep Guardian
 Stores timestamped sleep events throughout the night.
 In the morning, generates a sleep quality summary.
 
-Why Linked List instead of array?
+Why Doubly Linked List instead of array?
     - Events happen at unpredictable times (not uniform)
     - Frequent insertions in chronological order → O(1) at tail
     - No need for random access (we always traverse start to end)
     - Easy to insert in the middle if events arrive out of order
+    - Can traverse BOTH directions: head→tail AND tail→head
 
-Structure:
-    HEAD → [02:15 snoring] → [02:30 position] → [03:10 restless] → None
-    Each node points to the next — no wasted space, grows as needed.
+Structure (doubly linked — each node has .next AND .prev):
+    None ← [02:15 snoring] ⇄ [02:30 position] ⇄ [03:10 restless] → None
+    HEAD ──────────────────────────────────────────────────────── TAIL
 
 Time Complexity:
     - append()          → O(1) — pointer at tail
@@ -24,7 +25,7 @@ Space: O(n) — one node per event
 
 
 class EventNode:
-    """Single node in the linked list."""
+    """Single node in the doubly linked list."""
 
     def __init__(self, timestamp, event_type, details=""):
         """
@@ -38,13 +39,14 @@ class EventNode:
         self.event_type = event_type
         self.details = details
         self.next = None  # pointer to next node
+        self.prev = None  # pointer to previous node (doubly linked)
 
     def __repr__(self):
         return f"[{self.timestamp}s | {self.event_type}: {self.details}]"
 
 
 class EventLog:
-    """Linked list of sleep events for nightly logging."""
+    """Doubly linked list of sleep events for nightly logging."""
 
     def __init__(self):
         self.head = None  # first event of the night
@@ -58,18 +60,18 @@ class EventLog:
         How it works:
             - Create new node
             - If list is empty, new node becomes both head and tail
-            - Otherwise, current tail.next = new node, then update tail
+            - Otherwise, link old tail ⇄ new node, then update tail
 
         Use when events arrive in chronological order (most of the time).
         """
         node = EventNode(timestamp, event_type, details)
 
         if self.tail is None:
-            # first event of the night
             self.head = node
             self.tail = node
         else:
-            self.tail.next = node
+            node.prev = self.tail      # new node points back to old tail
+            self.tail.next = node      # old tail points forward to new node
             self.tail = node
 
         self.count += 1
@@ -80,7 +82,7 @@ class EventLog:
 
         How it works:
             - Walk from head, find first node with timestamp > ours
-            - Insert before that node
+            - Insert before that node, linking both prev and next
             - Handle edge cases: empty list, insert at head, insert at tail
 
         Use when an event arrives slightly out of order
@@ -98,6 +100,7 @@ class EventLog:
         # insert before head
         if timestamp < self.head.timestamp:
             node.next = self.head
+            self.head.prev = node      # old head points back to new node
             self.head = node
             self.count += 1
             return
@@ -109,6 +112,9 @@ class EventLog:
 
         # insert after current
         node.next = current.next
+        node.prev = current            # new node points back to current
+        if current.next:
+            current.next.prev = node   # next node points back to new node
         current.next = node
 
         # update tail if inserted at end
@@ -116,6 +122,18 @@ class EventLog:
             self.tail = node
 
         self.count += 1
+
+    def get_events_reverse(self):
+        """
+        Get all events in reverse order (latest first). O(n).
+        Only possible with a doubly linked list — walk backward from tail.
+        """
+        events = []
+        current = self.tail
+        while current:
+            events.append((current.timestamp, current.event_type, current.details))
+            current = current.prev
+        return events
 
     def get_events(self, event_type=None):
         """
@@ -210,7 +228,7 @@ class EventLog:
         while current:
             events.append(str(current))
             current = current.next
-        return " → ".join(events) if events else "EventLog(empty)"
+        return " ⇄ ".join(events) if events else "EventLog(empty)"
 
 
 # ---------------------------------------------------------------------------
