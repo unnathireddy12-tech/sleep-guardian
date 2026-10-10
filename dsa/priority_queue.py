@@ -29,21 +29,34 @@ Space: O(n)
 """
 
 
-class SleepEvent:
-    """Represents a single sleep event with a priority."""
+class BaseEvent:
+    """
+    Base class for all sleep-related events (INHERITANCE demo).
+    Provides common attributes shared by SleepEvent and SoundEvent.
+    """
 
-    def __init__(self, event_type, priority, timestamp, details=""):
-        """
-        Args:
-            event_type: str like 'snoring', 'position_change', 'restless'
-            priority: 1 (low), 2 (medium), 3 (high)
-            timestamp: when the event occurred
-            details: extra info for the sleep summary
-        """
+    def __init__(self, event_type, timestamp, details=""):
         self.event_type = event_type
-        self.priority = priority
         self.timestamp = timestamp
         self.details = details
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.event_type}, time={self.timestamp})"
+
+    def describe(self):
+        return f"{self.event_type} at {self.timestamp}"
+
+
+class SleepEvent(BaseEvent):
+    """
+    Inherits from BaseEvent — adds a priority field for the heap.
+    Demonstrates INHERITANCE: reuses event_type, timestamp, details
+    from the parent and adds priority on top.
+    """
+
+    def __init__(self, event_type, priority, timestamp, details=""):
+        super().__init__(event_type, timestamp, details)
+        self.priority = priority
 
     def __repr__(self):
         return f"SleepEvent({self.event_type}, priority={self.priority}, time={self.timestamp})"
@@ -125,45 +138,39 @@ class PriorityQueue:
 
     def _bubble_up(self, idx):
         """
-        Move element at idx upward until heap property is restored.
+        RECURSIVE: Move element at idx upward until heap property is restored.
 
-        Compare with parent:
-            parent index = (idx - 1) // 2
-            if we're smaller (higher priority, since negated), swap
+        Base case: idx == 0 (reached root) or parent is already smaller
+        Recursive case: swap with parent, then bubble_up(parent_index)
         """
-        while idx > 0:
-            parent = (idx - 1) // 2
-            if self.heap[idx] < self.heap[parent]:
-                self._swap(idx, parent)
-                idx = parent
-            else:
-                break
+        if idx <= 0:
+            return
+
+        parent = (idx - 1) // 2
+        if self.heap[idx] < self.heap[parent]:
+            self._swap(idx, parent)
+            self._bubble_up(parent)  # ← RECURSION
 
     def _sink_down(self, idx):
         """
-        Move element at idx downward until heap property is restored.
+        RECURSIVE: Move element at idx downward until heap property is restored.
 
-        Compare with both children:
-            left  = 2*idx + 1
-            right = 2*idx + 2
-            swap with the smaller (higher priority) child
+        Base case: no child is smaller (heap property satisfied)
+        Recursive case: swap with smallest child, then sink_down(that child's index)
         """
         size = len(self.heap)
-        while True:
-            smallest = idx
-            left = 2 * idx + 1
-            right = 2 * idx + 2
+        smallest = idx
+        left = 2 * idx + 1
+        right = 2 * idx + 2
 
-            if left < size and self.heap[left] < self.heap[smallest]:
-                smallest = left
-            if right < size and self.heap[right] < self.heap[smallest]:
-                smallest = right
+        if left < size and self.heap[left] < self.heap[smallest]:
+            smallest = left
+        if right < size and self.heap[right] < self.heap[smallest]:
+            smallest = right
 
-            if smallest != idx:
-                self._swap(idx, smallest)
-                idx = smallest
-            else:
-                break
+        if smallest != idx:
+            self._swap(idx, smallest)
+            self._sink_down(smallest)  # ← RECURSION
 
     def _swap(self, i, j):
         self.heap[i], self.heap[j] = self.heap[j], self.heap[i]

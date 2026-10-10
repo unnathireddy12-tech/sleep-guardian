@@ -219,17 +219,25 @@ def energy_variance(signal, window_size=10):
 # MAIN CLASSIFIER
 # ===================================================================
 
-class SoundEvent:
-    """Represents a classified sound event."""
+from dsa.priority_queue import BaseEvent
+
+
+class SoundEvent(BaseEvent):
+    """
+    Inherits from BaseEvent — adds sound-specific fields.
+    Demonstrates INHERITANCE: reuses event_type, timestamp, details
+    from the parent and adds start_time, end_time, duration, zcr, etc.
+    """
 
     def __init__(self, event_type, start_time, end_time, duration,
                  confidence, zcr, avg_amplitude):
-        self.event_type = event_type        # 'snoring' or 'sleep_talking'
-        self.start_time = start_time        # seconds since sleep start
+        super().__init__(event_type, timestamp=start_time,
+                         details=f"zcr={zcr}, amp={avg_amplitude}")
+        self.start_time = start_time
         self.end_time = end_time
-        self.duration = duration            # seconds
-        self.confidence = confidence        # 0.0 to 1.0
-        self.zcr = zcr                      # zero crossing rate
+        self.duration = duration
+        self.confidence = confidence
+        self.zcr = zcr
         self.avg_amplitude = avg_amplitude
 
     def __repr__(self):
