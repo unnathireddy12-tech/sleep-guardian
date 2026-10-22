@@ -10,14 +10,12 @@ Data Flow:
             → Morning Summary + Dashboard JSON
 
 Usage:
-    python main.py              → simulation mode (demo with fake data)
-    python main.py --hardware   → real hardware mode (reads from Arduino/ESP32)
+    python main.py              → real hardware mode (reads from Arduino/ESP32)
     python main.py --port COM3  → specify serial port (default: auto-detect)
 """
 
 import json
 import math
-import random
 import sys
 import time
 
@@ -66,63 +64,7 @@ all_movement_classifications = []
 # 2. SENSOR SIMULATION (replace with real serial reads on hardware)
 # ===================================================================
 
-def simulate_sensor_reading(timestamp):
-    """
-    Simulate one second of sensor data.
-    Generates realistic patterns that let the classifier differentiate
-    snoring (periodic short bursts, stable amplitude) from
-    sleep talking (longer irregular bursts, varying amplitude).
-    """
-    phase = timestamp % 600  # cycle every 10 minutes for demo
-
-    # Phase 1: Snoring on back (0-3 min)
-    # Pattern: 2s loud → 3s quiet → repeat (periodic, short bursts)
-    if phase < 180:
-        cycle_pos = phase % 5  # 5-second cycle
-        if cycle_pos < 2:
-            # snore burst: consistent amplitude (low variation = low ZCR)
-            sound = random.uniform(65, 75)
-        else:
-            sound = random.uniform(25, 35)
-        pressure = random.uniform(500, 700)
-        position = "back"
-        movement = random.uniform(0.5, 2.0)
-
-    # Phase 2: Sleep talking on side (3-5 min)
-    # Pattern: 5-8s talking → 3-5s silence (longer, irregular bursts)
-    elif phase < 300:
-        talk_offset = (phase - 180) % 13  # ~13 second cycle
-        if talk_offset < 7:
-            # talking burst: highly varied amplitude (high ZCR)
-            base = random.uniform(50, 70)
-            variation = random.uniform(-20, 20)
-            sound = max(20, base + variation)
-        else:
-            sound = random.uniform(20, 35)
-        pressure = random.uniform(480, 680)
-        position = "side_left"
-        movement = random.uniform(0.5, 2.5)
-
-    # Phase 3: Quiet side sleeping (5-8 min)
-    elif phase < 480:
-        sound = random.uniform(20, 38)
-        pressure = random.uniform(450, 650)
-        position = "side_right" if phase > 420 else "side_left"
-        movement = random.uniform(0.3, 2.0)
-
-    # Phase 4: Restless period (8-10 min)
-    else:
-        sound = random.uniform(30, 50)
-        pressure = random.uniform(400, 700)
-        position = random.choice(["back", "side_left", "side_right"])
-        movement = random.uniform(3.0, 8.0)
-
-    return {
-        "sound": round(sound, 1),
-        "pressure": round(pressure, 1),
-        "position": position,
-        "accel_magnitude": round(movement, 2),
-    }
+# simulate_sensor_reading() removed — all data comes from real ESP32 hardware
 
 
 # ===================================================================
@@ -169,6 +111,28 @@ def connect_serial(port=None, baud=9600):
     return ser
 
 
+def normalize_position(position):
+    """
+    Map ESP32 position strings ("TURNED LEFT", "BACK", ...) onto the
+    state machine's position keys. Already-normalized keys pass through.
+    """
+    p = str(position or "").strip().lower().replace("-", " ").replace("_", " ")
+    if not p:
+        return "unknown"
+    if "left" in p:
+        return "side_left"
+    if "right" in p:
+        return "side_right"
+    if "stomach" in p or "prone" in p or "face down" in p:
+        return "stomach"
+    if "upside down" in p:
+        return "stomach"
+    # "NORMAL" is the ESP32's flat pillow (no tilt): the sleeper is on their back
+    if "back" in p or "supine" in p or "flat" in p or "straight" in p or p == "normal":
+        return "back"
+    return "unknown"
+
+
 def read_serial_line(ser):
     """
     Read one JSON line from Arduino and parse it.
@@ -191,9 +155,13 @@ def read_serial_line(ser):
 # 3. PROCESS ONE SECOND OF DATA (the core loop body)
 # ===================================================================
 
-def process_reading(timestamp, reading):
+def process_reading(timestamp, reading, classify_sound=True):
     """
     Process a single sensor reading through the full DSA pipeline.
+
+    classify_sound=False skips the Python sound classifier. The live server
+    uses that: the ESP32 classifies snoring / sleep talking itself, and its
+    result is the only one that may reach the dashboard.
     """
     actions_taken = []
 
@@ -202,18 +170,24 @@ def process_reading(timestamp, reading):
     pressure_buffer.add(reading["pressure"])
     accel_buffer.add(reading["accel_magnitude"])
 
+    # ESP32 sends human-readable positions ("TURNED LEFT"); the state
+    # machine and correlator work on normalized keys ("side_left").
+    position_key = normalize_position(reading["position"])
+
     # --- Step 2: Feed into signal correlator (Task 4) ---
     for sensor_name, value in reading.items():
+        if sensor_name == "position":
+            value = position_key
         correlator.add_reading(timestamp, sensor_name, value)
 
     # --- Step 3: Update position state machine (Task 7) ---
-    result = position_tracker.transition(reading["position"], timestamp)
+    result = position_tracker.transition(position_key, timestamp)
     if result["success"] and result["reason"] != "No change":
         event_log.append(timestamp, "position_change", result["reason"])
         actions_taken.append(f"Position: {result['reason']}")
 
     # --- Step 4: Sound classification every 30 seconds (Task 8) ---
-    if timestamp % 30 == 0 and len(sound_buffer) >= 30:
+    if classify_sound and timestamp % 30 == 0 and len(sound_buffer) >= 30:
         sound_data = sound_buffer.get_latest(30)
         baseline = compute_baseline(sound_data)
         threshold = baseline + 20
@@ -407,105 +381,7 @@ def generate_dashboard_data():
 # 5. RUN THE SIMULATION
 # ===================================================================
 
-def run_simulation(duration_seconds=300, print_interval=30):
-    """
-    Simulate a sleep session and generate dashboard data.
-    """
-    print("=" * 60)
-    print("  Sleep Guardian — Pipeline Simulation")
-    print("=" * 60)
-    print(f"\nSimulating {duration_seconds // 60} minutes of sleep data...\n")
-
-    for t in range(duration_seconds):
-        reading = simulate_sensor_reading(t)
-        actions = process_reading(t, reading)
-
-        if t % print_interval == 0 and t > 0:
-            mins = t // 60
-            secs = t % 60
-            print(f"[{mins:02d}:{secs:02d}] "
-                  f"Position: {position_tracker.get_current_position():>10} | "
-                  f"Sound: {reading['sound']:5.1f} | "
-                  f"Movement: {reading['accel_magnitude']:4.2f}")
-
-            for action in actions:
-                print(f"         → {action}")
-
-    # ===================================================================
-    # MORNING SUMMARY
-    # ===================================================================
-    print("\n" + "=" * 60)
-    print("  Morning Sleep Summary")
-    print("=" * 60)
-
-    # event log summary
-    summary = event_log.generate_summary()
-    print(f"\n{summary['summary']}")
-
-    # sound classifier report
-    sound_classifier.print_report()
-
-    # position stats
-    pos_stats = position_tracker.get_position_stats()
-    print(f"\n--- Position Analysis ---")
-    print(f"  Total position changes: {pos_stats['total_transitions']}")
-    for pos, data in pos_stats["positions"].items():
-        if data["seconds"] > 0:
-            print(f"  {pos:>12}: {data['minutes']} min ({data['percentage']}%)")
-
-    back_pct = position_tracker.get_back_sleep_percentage()
-    print(f"\n  Back-sleep percentage: {back_pct}%")
-    if back_pct > 50:
-        print("  High back-sleep time — primary snoring risk factor")
-
-    # movement
-    if len(accel_buffer) >= 30:
-        final_movement = classify_movement(
-            accel_buffer.get_latest(), window_size=15, threshold=4.0
-        )
-        final_restless = restlessness_percentage(final_movement)
-        print(f"\n  Overall restlessness: {final_restless}%")
-
-    # insomnia detection
-    if all_movement_classifications:
-        episodes = detect_insomnia_episodes(
-            all_movement_classifications, window_seconds=15, min_streak_minutes=2
-        )
-        duration_min = summary.get("duration_minutes", 1)
-        risk = insomnia_risk_score(
-            all_movement_classifications, episodes, max(duration_min, 1)
-        )
-        print(f"\n--- Insomnia Detection (RLE) ---")
-        print(f"  Risk score: {risk['score']}/100 ({risk['level']})")
-        print(f"  Restless ratio: {risk['factors'].get('restless_ratio', 0)}%")
-        print(f"  Longest restless streak: {risk['factors'].get('longest_streak_minutes', 0)} min")
-        print(f"  Insomnia episodes: {len(episodes)}")
-        for i, ep in enumerate(episodes, 1):
-            m_start = int(ep['start_seconds'] // 60)
-            s_start = int(ep['start_seconds'] % 60)
-            print(f"    Episode {i}: {m_start:02d}:{s_start:02d} — "
-                  f"{ep['duration_minutes']} min (intensity={ep['avg_intensity']})")
-
-    # generate dashboard JSON
-    dashboard = generate_dashboard_data()
-    with open("dashboard_data.json", "w") as f:
-        json.dump(dashboard, f, indent=2)
-    print(f"\nDashboard data saved to dashboard_data.json")
-
-    print("\n" + "=" * 60)
-    print("  DSA components used:")
-    print("    1. Circular Buffer     — sensor data storage")
-    print("    2. Sliding Window      — movement classification")
-    print("    3. Priority Queue      — alert management")
-    print("    4. Hash Map            — signal correlation")
-    print("    5. Linked List         — event logging")
-    print("    6. Peak Finding        — snoring pattern detection")
-    print("    7. State Machine       — position tracking")
-    print("    8. Sound Classifier    — snoring vs sleep talking (ZCR + burst + variance)")
-    print("    9. Insomnia Detector   — prolonged restlessness via run-length encoding")
-    print("=" * 60)
-
-    return dashboard
+# run_simulation() removed — no simulated/random data allowed
 
 
 # ===================================================================
@@ -555,7 +431,7 @@ def run_hardware(port=None, print_interval=30):
 
     ser.close()
 
-    # --- Morning Summary (same as simulation) ---
+    # --- Morning Summary ---
     print("\n" + "=" * 60)
     print("  Morning Sleep Summary")
     print("=" * 60)
@@ -630,12 +506,9 @@ def run_hardware(port=None, print_interval=30):
 if __name__ == "__main__":
     args = sys.argv[1:]
 
-    if "--hardware" in args or "--hw" in args:
-        port = None
-        if "--port" in args:
-            idx = args.index("--port")
-            if idx + 1 < len(args):
-                port = args[idx + 1]
-        run_hardware(port=port)
-    else:
-        run_simulation(duration_seconds=600, print_interval=30)
+    port = None
+    if "--port" in args:
+        idx = args.index("--port")
+        if idx + 1 < len(args):
+            port = args[idx + 1]
+    run_hardware(port=port)

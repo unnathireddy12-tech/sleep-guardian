@@ -1,178 +1,427 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sleep Guardian Dashboard</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
+<title>Sleep Guardian</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   :root {
-    --bg: #F7F6F3;
+    --bg: #F4F5F7;
     --bg-card: #FFFFFF;
-    --fg: #1A1A1A;
-    --fg-muted: #6B6B6B;
-    --border: #E5E3DE;
-    --accent: #3D5AF1;
-    --snore: #E8453C;
-    --talk: #8B5CF6;
-    --position: #0EA5E9;
-    --restless: #F59E0B;
-    --good: #10B981;
-    --ring-track: #E5E3DE;
-    --insomnia: #EC4899;
-    --live: #22C55E;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    --bg-subtle: #F7F8FA;
+    --fg: #1C2128;
+    --fg-muted: #626B76;
+    --fg-faint: #8A929C;
+    --border: #DCE1E6;
+    --border-strong: #C5CCD4;
+    --accent: #0B5CAD;
+    --snore: #C2362F;
+    --talk: #6B46C1;
+    --position: #0A7A87;
+    --restless: #A86B12;
+    --good: #2B7A4B;
+    --insomnia: #A8336A;
+    --live: #2B7A4B;
+    --ring-track: #E5E9ED;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #111111;
-      --bg-card: #1A1A1A;
-      --fg: #E8E6E1;
-      --fg-muted: #8A8A8A;
-      --border: #2A2A2A;
-      --accent: #6B7FFF;
-      --snore: #F06B63;
-      --talk: #A78BFA;
-      --position: #38BDF8;
-      --restless: #FBBF24;
-      --good: #34D399;
-      --ring-track: #2A2A2A;
-      --insomnia: #F472B6;
-      --live: #4ADE80;
+      --bg: #0E1116;
+      --bg-card: #161B22;
+      --bg-subtle: #12161C;
+      --fg: #E4E8ED;
+      --fg-muted: #98A1AC;
+      --fg-faint: #6E7781;
+      --border: #2A3038;
+      --border-strong: #3A424C;
+      --accent: #5A9CF0;
+      --snore: #EE6B63;
+      --talk: #A58BF5;
+      --position: #3DBDC9;
+      --restless: #D6A23A;
+      --good: #5BAF77;
+      --insomnia: #E0709F;
+      --live: #5BAF77;
+      --ring-track: #2A3038;
       color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #111111;
-    --bg-card: #1A1A1A;
-    --fg: #E8E6E1;
-    --fg-muted: #8A8A8A;
-    --border: #2A2A2A;
-    --accent: #6B7FFF;
-    --snore: #F06B63;
-    --talk: #A78BFA;
-    --position: #38BDF8;
-    --restless: #FBBF24;
-    --good: #34D399;
-    --ring-track: #2A2A2A;
-    --insomnia: #F472B6;
-    --live: #4ADE80;
+    --bg: #0E1116;
+    --bg-card: #161B22;
+    --bg-subtle: #12161C;
+    --fg: #E4E8ED;
+    --fg-muted: #98A1AC;
+    --fg-faint: #6E7781;
+    --border: #2A3038;
+    --border-strong: #3A424C;
+    --accent: #5A9CF0;
+    --snore: #EE6B63;
+    --talk: #A58BF5;
+    --position: #3DBDC9;
+    --restless: #D6A23A;
+    --good: #5BAF77;
+    --insomnia: #E0709F;
+    --live: #5BAF77;
+    --ring-track: #2A3038;
     color-scheme: dark;
   }
+
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
   body {
+    margin: 0;
     background: var(--bg);
     color: var(--fg);
-    margin: 0;
-    padding: 16px;
-    max-width: 960px;
-    margin: 0 auto;
-    font: 14px 'DM Sans', system-ui, sans-serif;
+    font: 15.5px/1.5 var(--sans);
+    -webkit-font-smoothing: antialiased;
   }
-  .header {
-    padding-top: 24px;
-    padding-bottom: 8px;
+  code { font-family: var(--mono); font-size: 0.88em; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---------- App bar ---------- */
+  .appbar {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+  }
+  .appbar-row {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
+    align-items: center;
+    gap: 24px;
+    min-height: 56px;
     flex-wrap: wrap;
   }
-  .header h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: -0.02em;
-  }
-  .header .date {
-    font-size: 0.8rem;
-    color: var(--fg-muted);
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* Tabs */
-  .tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 2px solid var(--border);
-    margin-top: 16px;
-  }
-  .tab {
-    padding: 10px 20px;
-    font-size: 0.82rem;
+  .wordmark {
     font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .wordmark .product-sub {
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--fg-muted);
+  }
+  .tabs { display: flex; gap: 2px; align-self: stretch; }
+  .tab {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 14.5px;
+    font-weight: 500;
     color: var(--fg-muted);
     cursor: pointer;
     border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    transition: color 0.2s, border-color 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    margin-bottom: -1px;
+    user-select: none;
+    white-space: nowrap;
   }
   .tab:hover { color: var(--fg); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-panel { display: none; }
+  .tab.active { color: var(--fg); border-bottom-color: var(--accent); }
+  .appbar-status {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    flex-wrap: wrap;
+  }
+  .appbar-status .date { font-family: var(--mono); }
+  .tab-panel { display: none; padding-bottom: 8px; }
   .tab-panel.active { display: block; }
-  .live-dot {
-    width: 8px;
-    height: 8px;
+
+  .live-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--fg);
+  }
+  .live-status::before {
+    content: "";
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--live);
-    animation: pulse 1.5s infinite;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+  .live-status.offline::before { background: var(--snore); }
+  .live-status.stale::before { background: var(--restless); }
+  .source-chip { font-family: var(--mono); font-size: 13px; color: var(--fg-muted); }
+
+  /* ---------- Page heading ---------- */
+  .page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 22px 0 14px;
+  }
+  .page-head h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .page-head .meta { margin-top: 4px; font-size: 14px; color: var(--fg-muted); }
+
+  /* ---------- Panels ---------- */
+  .panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    min-height: 44px;
+  }
+  .panel-title { margin: 0; font-size: 15px; font-weight: 600; }
+  .panel-title .sub { font-weight: 400; color: var(--fg-muted); margin-left: 6px; }
+  .panel-body { padding: 14px; }
+  .section { margin-top: 16px; }
+  .section-title { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+
+  /* Readout strip: one bordered row, cells split by rules */
+  .readouts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .readout {
+    padding: 14px 16px 15px;
+    border-left: 1px solid var(--border);
+    min-width: 0;
+  }
+  .readout:first-child { border-left: 0; }
+  .readout-label {
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .readout-label .hint { color: var(--fg-faint); font-size: 12px; }
+  .readout-value {
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .readout-value .u { font-size: 15px; color: var(--fg-muted); margin-left: 4px; letter-spacing: 0; }
+  .readout-value.word {
+    font-family: var(--sans);
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .readout-sub {
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .quality-badge {
+  /* State indicator (live sound, vibration) */
+  .state-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+  }
+  .state-pill .indicator {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid var(--fg-faint);
+    flex-shrink: 0;
+  }
+  .state-pill.off { color: var(--fg-muted); }
+  .state-pill.on .indicator { border-color: currentColor; background: currentColor; }
+  #live-sound-state.on { color: var(--accent); }
+  #live-vibration.on { color: var(--insomnia); }
+  .state-pill.on .indicator { animation: blink 1.2s steps(2, start) infinite; }
+  @keyframes blink { to { opacity: 0.35; } }
+
+  .flag-row { display: flex; gap: 14px; margin-top: 6px; font-size: 13.5px; color: var(--fg-muted); }
+  .flag::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 1px;
+    margin-right: 6px;
+    border: 1px solid var(--fg-faint);
+    vertical-align: 0;
+  }
+  .flag.on-snore { color: var(--snore); font-weight: 500; }
+  .flag.on-snore::before { background: var(--snore); border-color: var(--snore); }
+  .flag.on-talk { color: var(--talk); font-weight: 500; }
+  .flag.on-talk::before { background: var(--talk); border-color: var(--talk); }
+
+  .progress-track {
+    height: 4px;
+    background: var(--ring-track);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 9px;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    transition: width 0.6s linear;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    height: 34px;
+    padding: 0 13px;
+    border-radius: 5px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-card);
+    color: var(--fg);
+    font: 500 14px var(--sans);
+    cursor: pointer;
+    white-space: nowrap;
   }
-  .quality-poor { background: color-mix(in srgb, var(--snore) 15%, transparent); color: var(--snore); }
-  .quality-fair { background: color-mix(in srgb, var(--restless) 15%, transparent); color: var(--restless); }
-  .quality-good { background: color-mix(in srgb, var(--good) 15%, transparent); color: var(--good); }
+  .btn:hover { background: var(--bg-subtle); }
+  .btn:focus-visible, .seg button:focus-visible, .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover { background: color-mix(in srgb, var(--accent) 88%, #000); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary:disabled:hover { background: var(--accent); }
+  .btn-sm { height: 30px; padding: 0 10px; font-size: 13px; text-decoration: none; }
+  .save-box { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+  .save-status { font-size: 13.5px; color: var(--fg-muted); max-width: 420px; text-align: right; }
+  .save-status.ok { color: var(--good); font-weight: 500; }
+  .save-status.err { color: var(--snore); }
+  .btn svg { width: 14px; height: 14px; }
+  .btn-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--border-strong);
+    border-radius: 5px;
+    overflow: hidden;
+    height: 34px;
+  }
+  .seg button {
+    border: 0;
+    background: var(--bg-card);
+    color: var(--fg-muted);
+    padding: 0 10px;
+    font: 500 13px var(--mono);
+    cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--border); }
+  .seg button.active { background: var(--bg-subtle); color: var(--fg); box-shadow: inset 0 -2px 0 var(--accent); }
 
-  .stats {
+  /* ---------- Live layout ---------- */
+  .monitor-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 16px;
     margin-top: 16px;
   }
-  .stat-card {
+  .chart-canvas-wrap { position: relative; width: 100%; height: 400px; }
+  .chart-canvas-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .chart-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--fg-muted);
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .chart-empty[hidden] { display: none; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 10px 14px; border-top: 1px solid var(--border); }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13.5px; color: var(--fg-muted); }
+  .legend-dot { width: 12px; height: 3px; border-radius: 1px; }
+  .legend-dot.block { height: 10px; width: 10px; }
+
+  .live-log {
+    height: 446px;
+    overflow-y: auto;
+    font-size: 14px;
+  }
+  .log-entry {
+    display: grid;
+    grid-template-columns: 52px 96px minmax(0, 1fr);
+    gap: 8px;
+    padding: 7px 14px;
+    border-bottom: 1px solid var(--border);
+    align-items: baseline;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-time { font-family: var(--mono); font-size: 13px; color: var(--fg-muted); }
+  .log-tag { font-size: 13px; font-weight: 600; color: var(--fg-muted); }
+  .log-tag.t-snore { color: var(--snore); }
+  .log-tag.t-talk { color: var(--talk); }
+  .log-tag.t-restless { color: var(--restless); }
+  .log-tag.t-insomnia, .log-tag.t-vibe { color: var(--insomnia); }
+  .log-tag.t-class { color: var(--accent); }
+  .log-tag.t-position { color: var(--position); }
+  .log-text { min-width: 0; overflow-wrap: anywhere; }
+  .log-empty { padding: 28px 16px; font-size: 14px; color: var(--fg-muted); text-align: center; line-height: 1.7; }
+
+  /* ---------- Report ---------- */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 6px;
+  }
+  .stat-card {
+    padding: 14px 16px;
+    border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
-  .stat-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--fg-muted);
-  }
+  .stat-card:first-child { border-left: 0; }
+  .stat-label { font-size: 13.5px; color: var(--fg-muted); }
   .stat-value {
-    font-size: 1.6rem;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-  .stat-unit {
-    font-size: 0.75rem;
+    font-family: var(--mono);
+    font-size: 28px;
     font-weight: 500;
-    color: var(--fg-muted);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
   }
+  .stat-value small { font-size: 15px; color: var(--fg-muted); margin-left: 2px; }
+  .stat-unit { font-size: 13.5px; color: var(--fg-muted); }
   .color-snore { color: var(--snore); }
   .color-talk { color: var(--talk); }
   .color-restless { color: var(--restless); }
@@ -180,341 +429,303 @@
   .color-insomnia { color: var(--insomnia); }
   .color-live { color: var(--live); }
 
-  /* Live panel */
-  .live-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-top: 16px;
-  }
-  .live-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-  }
-  .live-card .stat-value {
-    font-size: 2.2rem;
-    transition: color 0.3s;
-  }
-  .live-card .stat-label { margin-bottom: 6px; }
-  .live-status {
-    display: flex;
+  .quality-badge {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 16px;
-    font-size: 0.82rem;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--live);
+    border: 1px solid currentColor;
+    line-height: 20px;
+    text-transform: capitalize;
   }
-  .live-status.offline { color: var(--snore); }
-  .live-log {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 16px;
-    max-height: 280px;
-    overflow-y: auto;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    line-height: 1.8;
-  }
-  .log-entry { border-bottom: 1px solid var(--border); padding: 4px 0; }
-  .log-entry:last-child { border-bottom: none; }
-  .log-time { color: var(--fg-muted); margin-right: 8px; }
+  .quality-poor { color: var(--snore); }
+  .quality-fair { color: var(--restless); }
+  .quality-good { color: var(--good); }
 
-  /* History */
-  .history-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-variant-numeric: tabular-nums;
-  }
-  .history-table th {
-    text-align: left;
-    padding: 10px 12px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--fg-muted);
-    border-bottom: 2px solid var(--border);
-  }
-  .history-table td {
-    padding: 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.82rem;
-  }
-  .history-table tr:last-child td { border-bottom: none; }
-  .history-table tr:hover td { background: color-mix(in srgb, var(--accent) 5%, transparent); }
-  .trend-up { color: var(--snore); }
-  .trend-down { color: var(--good); }
-  .trend-same { color: var(--fg-muted); }
-
-  .risk-meter { margin-bottom: 16px; }
-  .risk-track {
-    height: 10px;
-    background: var(--ring-track);
-    border-radius: 5px;
-    overflow: hidden;
-    margin-top: 6px;
-  }
-  .risk-fill {
-    height: 100%;
-    border-radius: 5px;
-    background: var(--insomnia);
-    transition: width 0.4s ease;
-  }
-  .risk-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--fg-muted);
-    margin-top: 4px;
-    font-family: 'DM Mono', monospace;
-  }
-  .insomnia-ep {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .insomnia-ep:last-child { border-bottom: none; }
-  .ep-badge {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: color-mix(in srgb, var(--insomnia) 15%, transparent);
-    color: var(--insomnia);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .ep-details { flex: 1; min-width: 0; }
-  .ep-time {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.78rem;
-  }
-  .ep-dur {
-    font-size: 0.72rem;
-    color: var(--fg-muted);
-  }
-
-  .section { margin-top: 28px; }
-  .section-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--fg-muted);
-    margin: 0 0 12px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .timeline-chart {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    overflow-x: auto;
-  }
+  .timeline-chart { padding: 14px; overflow-x: auto; }
   .timeline-chart svg { display: block; width: 100%; height: auto; }
-  .event-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
+  .event-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
   .event-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
     gap: 8px;
+    flex-wrap: wrap;
   }
   .event-header-left { display: flex; align-items: center; gap: 8px; }
-  .event-header h3 { font-size: 0.9rem; font-weight: 600; margin: 0; }
-  .event-total {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--fg-muted);
-  }
-  .event-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.8rem;
-    font-variant-numeric: tabular-nums;
-  }
-  .event-table th {
+  .event-header h3 { font-size: 15px; font-weight: 600; margin: 0; }
+  .event-total { font-family: var(--mono); font-size: 13px; color: var(--fg-muted); }
+  .dot { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+  .event-table, .history-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  .event-table th, .history-table th {
     text-align: left;
-    padding: 8px 16px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    padding: 9px 14px;
+    font-size: 13.5px;
+    font-weight: 500;
     color: var(--fg-muted);
+    background: var(--bg-subtle);
     border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
   }
-  .event-table td {
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--border);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-  }
-  .event-table tr:last-child td { border-bottom: none; }
-  .dur-bar {
-    display: inline-block;
-    height: 6px;
-    border-radius: 3px;
-    vertical-align: middle;
-    margin-left: 8px;
-  }
+  .event-table td { padding: 7px 14px; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 13.5px; }
+  .history-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 14.5px; }
+  .event-table tr:last-child td, .history-table tr:last-child td { border-bottom: none; }
+  .history-table tbody tr:hover td { background: var(--bg-subtle); }
+  .dur-bar { display: inline-block; height: 5px; border-radius: 1px; vertical-align: middle; margin-left: 8px; opacity: 0.8; }
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
   .position-bars { display: flex; flex-direction: column; gap: 10px; }
   .pos-row { display: flex; align-items: center; gap: 12px; }
-  .pos-label {
-    width: 80px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    text-align: right;
-    flex-shrink: 0;
-  }
-  .pos-track {
-    flex: 1;
-    height: 10px;
-    background: var(--ring-track);
-    border-radius: 5px;
-    overflow: hidden;
-    min-width: 0;
-  }
-  .pos-fill { height: 100%; border-radius: 5px; background: var(--position); }
-  .pos-pct {
-    width: 44px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--fg-muted);
-    flex-shrink: 0;
-  }
+  .pos-label { width: 92px; font-size: 14px; color: var(--fg-muted); flex-shrink: 0; }
+  .pos-track { flex: 1; height: 8px; background: var(--ring-track); border-radius: 2px; overflow: hidden; min-width: 0; }
+  .pos-fill { height: 100%; border-radius: 2px; background: var(--position); }
   .pos-fill.back-fill { background: var(--snore); }
   .pos-fill.side-fill { background: var(--position); }
   .pos-fill.stomach-fill { background: var(--good); }
-  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--fg-muted); }
-  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
-  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  @media (max-width: 600px) {
-    .detail-grid { grid-template-columns: 1fr; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .live-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+  .pos-pct { width: 56px; text-align: right; font-family: var(--mono); font-size: 13.5px; flex-shrink: 0; }
+
+  .risk-meter { margin-bottom: 16px; }
+  .risk-track { height: 8px; background: var(--ring-track); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+  .risk-fill { height: 100%; background: var(--insomnia); transition: width 0.4s ease; }
+  .risk-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--fg-muted); margin-top: 4px; font-family: var(--mono); }
+  .insomnia-ep { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .insomnia-ep:last-child { border-bottom: none; }
+  .ep-badge { font-family: var(--mono); font-size: 13.5px; color: var(--fg-muted); width: 24px; flex-shrink: 0; }
+  .ep-details { flex: 1; min-width: 0; display: flex; gap: 16px; flex-wrap: wrap; }
+  .ep-time { font-family: var(--mono); font-size: 14px; }
+  .ep-dur { font-size: 14px; color: var(--fg-muted); }
   .warning-strip {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    margin-top: 12px;
-    background: color-mix(in srgb, var(--snore) 10%, transparent);
-    color: var(--snore);
-    border: 1px solid color-mix(in srgb, var(--snore) 20%, transparent);
+    padding: 9px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 14px;
+    color: var(--fg);
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--snore);
   }
+
+  .trend-up { color: var(--snore); }
+  .trend-down { color: var(--good); }
+  .trend-same { color: var(--fg-muted); }
+
   .footer {
     margin-top: 32px;
-    padding: 16px 0 24px;
+    padding: 14px 0 28px;
     border-top: 1px solid var(--border);
-    font-size: 0.7rem;
-    color: var(--fg-muted);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 16px;
+    font-size: 13px;
+    color: var(--fg-faint);
   }
-  .footer .pipe { color: var(--border); }
+
+  @media (max-width: 1000px) {
+    .monitor-grid { grid-template-columns: 1fr; }
+    .live-log { height: auto; max-height: 340px; }
+  }
+  @media (max-width: 760px) {
+    .wrap { padding: 0 16px; }
+    .readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .readout:nth-child(3) { border-left: 0; }
+    .readout:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .readout-value { font-size: 22px; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat-card:nth-child(odd) { border-left: 0; }
+    .stat-card:nth-child(n+3) { border-top: 1px solid var(--border); }
+    .chart-canvas-wrap { height: 330px; }
+    .appbar-row { gap: 4px 16px; padding: 8px 0 0; }
+    .tabs { order: 3; width: 100%; height: 40px; }
+    .appbar-status { margin-left: 0; }
+  }
+
+  /* Print / Save as PDF: report only */
+  @media print {
+    html, body { background: #fff !important; }
+    .appbar .tabs, .appbar-status .live-status, .appbar-status .source-chip,
+    .report-actions, .no-print, #panel-live, #panel-history, .footer { display: none !important; }
+    #panel-report { display: block !important; }
+    .panel, .event-card, .stats { break-inside: avoid; }
+    .event-card div[style*="max-height"] { max-height: none !important; overflow: visible !important; }
+  }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>Sleep Guardian</h1>
-  <span class="date" id="session-date">Loading...</span>
-  <span class="quality-badge" id="quality-badge" hidden>--</span>
-</div>
+<header class="appbar">
+  <div class="wrap appbar-row">
+    <div class="wordmark">Sleep Guardian <span class="product-sub">Sleep monitor</span></div>
+    <nav class="tabs" role="tablist">
+      <div class="tab active" data-tab="live" tabindex="0">Live monitor</div>
+      <div class="tab" data-tab="report" tabindex="0">Session report</div>
+      <div class="tab" data-tab="history" tabindex="0">History</div>
+    </nav>
+    <div class="appbar-status">
+      <span class="live-status" id="live-status">Connecting…</span>
+      <span class="source-chip" id="live-source">--</span>
+      <span class="date" id="session-date">--</span>
+      <span class="quality-badge" id="quality-badge" hidden>--</span>
+    </div>
+  </div>
+</header>
 
-<div class="tabs">
-  <div class="tab active" data-tab="live"><span class="live-dot"></span> Live</div>
-  <div class="tab" data-tab="report">Session Report</div>
-  <div class="tab" data-tab="history">History</div>
-</div>
+<main class="wrap">
 
 <!-- ==================== LIVE TAB ==================== -->
 <div class="tab-panel active" id="panel-live">
-  <div class="live-status" id="live-status">
-    <span class="live-dot"></span> Connecting to sensors...
-  </div>
 
-  <div class="live-grid">
-    <div class="live-card">
-      <div class="stat-label">Sound Level</div>
-      <div class="stat-value color-snore" id="live-sound">--</div>
-      <div class="stat-unit">dB</div>
+  <div class="page-head">
+    <div>
+      <h1>Live monitor</h1>
+      <div class="meta">Microphone detection updates instantly. Classification runs on a 60-second window on the ESP32.</div>
     </div>
-    <div class="live-card">
-      <div class="stat-label">Movement</div>
-      <div class="stat-value color-restless" id="live-movement">--</div>
-      <div class="stat-unit">g-force</div>
-    </div>
-    <div class="live-card">
-      <div class="stat-label">Pressure</div>
-      <div class="stat-value color-accent" id="live-pressure">--</div>
-      <div class="stat-unit">raw</div>
-    </div>
-    <div class="live-card">
-      <div class="stat-label">Position</div>
-      <div class="stat-value color-live" id="live-position" style="font-size:1.4rem">--</div>
-      <div class="stat-unit" id="live-time">00:00</div>
+    <div class="save-box">
+      <span class="save-status" id="save-status"></span>
+      <button class="btn btn-primary" id="btn-stop-session" disabled>
+        <svg viewBox="0 0 16 16" fill="currentColor"><rect x="4" y="4" width="8" height="8" rx="1"/></svg>Stop &amp; save session
+      </button>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--live)"></span> Live Event Log</div>
-    <div class="live-log" id="live-log">
-      <div style="color:var(--fg-muted);text-align:center;padding:20px">
-        Waiting for sensor data...<br>
-        Start the server: <code>python server.py --hardware</code>
+  <!-- Sound state (live detection vs completed 60 s classification) -->
+  <div class="readouts">
+    <div class="readout">
+      <div class="readout-label">Current sound <span class="hint">live</span></div>
+      <div class="state-pill off" id="live-sound-state"><span class="indicator"></span><span id="live-sound-state-text">QUIET</span></div>
+      <div class="readout-sub">Microphone, real time</div>
+    </div>
+    <div class="readout">
+      <div class="readout-label">Sound classification <span class="hint">last 60 s</span></div>
+      <div class="readout-value word" id="live-sound-event">NO SIGNIFICANT SOUND</div>
+      <div class="flag-row">
+        <span class="flag" id="flag-snoring">Snoring</span>
+        <span class="flag" id="flag-talking">Sleep talking</span>
       </div>
     </div>
+    <div class="readout">
+      <div class="readout-label">Next classification in</div>
+      <div class="readout-value" id="live-countdown">--</div>
+      <div class="progress-track"><div class="progress-fill" id="live-countdown-bar"></div></div>
+      <div class="readout-sub" id="live-sound-events">Sound events this window: --</div>
+    </div>
+    <div class="readout">
+      <div class="readout-label">Vibration motor <span class="hint">ESP32</span></div>
+      <div class="state-pill off" id="live-vibration"><span class="indicator"></span><span id="live-vibration-text">Vibration OFF</span></div>
+      <div class="readout-sub">Runs only after a classification</div>
+    </div>
+  </div>
+
+  <!-- Sensor readouts -->
+  <div class="readouts" style="margin-top:12px">
+    <div class="readout">
+      <div class="readout-label">Sound level</div>
+      <div class="readout-value"><span id="live-sound">--</span><span class="u">dB</span></div>
+      <div class="readout-sub">INMP441 microphone</div>
+    </div>
+    <div class="readout">
+      <div class="readout-label">Movement</div>
+      <div class="readout-value"><span id="live-movement">--</span><span class="u">&deg;</span></div>
+      <div class="readout-sub" id="live-tilt">Roll &amp; Pitch</div>
+    </div>
+    <div class="readout">
+      <div class="readout-label">Weight / pressure</div>
+      <div class="readout-value"><span id="live-pressure">--</span><span class="u" id="live-pressure-unit">g</span></div>
+      <div class="readout-sub" id="live-pressure-sub">HX711 load cell</div>
+    </div>
+    <div class="readout">
+      <div class="readout-label">Position</div>
+      <div class="readout-value word" id="live-position">--</div>
+      <div class="readout-sub" id="live-time">00:00 elapsed</div>
+    </div>
+  </div>
+
+  <div class="monitor-grid">
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Sensor trends</h2>
+        <div class="btn-group">
+          <div class="seg" id="chart-range">
+            <button data-range="60">1m</button>
+            <button data-range="300" class="active">5m</button>
+            <button data-range="900">15m</button>
+            <button data-range="0">All</button>
+          </div>
+          <button class="btn" id="btn-chart-png" title="Export the graph as a PNG image">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg>PNG
+          </button>
+          <button class="btn" id="btn-chart-csv" title="Export every recorded live sample as CSV">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg>CSV
+          </button>
+        </div>
+      </div>
+      <div class="chart-canvas-wrap">
+        <canvas id="live-chart"></canvas>
+        <div class="chart-empty" id="live-chart-empty">Waiting for live samples…</div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Sound (dB)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--restless)"></div>Left / Right (&deg;)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--position)"></div>Weight (g)</div>
+        <div class="legend-item"><div class="legend-dot block" style="background:color-mix(in srgb, var(--accent) 45%, transparent)"></div>Sound detected</div>
+        <div class="legend-item"><div class="legend-dot block" style="background:color-mix(in srgb, var(--insomnia) 22%, transparent)"></div>Vibration on</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Event log</h2>
+      </div>
+      <div class="live-log" id="live-log">
+        <div class="log-empty">
+          Waiting for sensor data.<br>
+          ESP32 over Wi-Fi: <code>python server.py</code><br>
+          ESP32 over USB: <code>python server.py --hardware</code>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
 <!-- ==================== SESSION REPORT TAB ==================== -->
 <div class="tab-panel" id="panel-report">
-  <div class="stats" id="stat-tiles"></div>
-
-  <div class="section">
-    <div class="section-title">Event Timeline</div>
-    <div class="timeline-chart" id="timeline-container"></div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--snore)"></div> Snoring</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--talk)"></div> Sleep Talking</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--position)"></div> Position Change</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--restless)"></div> Restless</div>
+  <div class="page-head">
+    <div>
+      <h1>Session report</h1>
+      <div class="meta" id="report-meta">Last saved session</div>
+    </div>
+    <div class="btn-group report-actions">
+      <button class="btn" id="btn-report-csv">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg>Export CSV
+      </button>
+      <button class="btn" id="btn-report-json">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg>Export JSON
+      </button>
+      <button class="btn btn-primary" id="btn-report-pdf">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V2h8v4M4 12H2.5V7.5A1.5 1.5 0 0 1 4 6h8a1.5 1.5 0 0 1 1.5 1.5V12H12M5 9.5h6v4.5H5z"/></svg>Download PDF
+      </button>
     </div>
   </div>
+
+  <div class="stats" id="stat-tiles"></div>
+
+  <section class="panel section">
+    <div class="panel-head">
+      <h2 class="panel-title">Event timeline</h2>
+      <button class="btn no-print" id="btn-timeline-png">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg>PNG
+      </button>
+    </div>
+    <div class="timeline-chart" id="timeline-container"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot block" style="background:var(--snore)"></div>Snoring</div>
+      <div class="legend-item"><div class="legend-dot block" style="background:var(--talk)"></div>Sleep talking</div>
+      <div class="legend-item"><div class="legend-dot block" style="background:var(--position)"></div>Position change</div>
+      <div class="legend-item"><div class="legend-dot block" style="background:var(--restless)"></div>Restless</div>
+    </div>
+  </section>
 
   <div class="section">
     <div class="detail-grid">
@@ -537,7 +748,7 @@
         <div class="event-header">
           <div class="event-header-left">
             <div class="dot" style="background:var(--talk)"></div>
-            <h3>Sleep Talking</h3>
+            <h3>Sleep talking</h3>
           </div>
           <span class="event-total" id="talk-total"></span>
         </div>
@@ -551,33 +762,32 @@
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-title"><span class="dot" style="background:var(--position)"></span> Position Breakdown</div>
-    <div class="event-card" style="padding:20px">
+  <section class="panel section">
+    <div class="panel-head"><h2 class="panel-title">Position breakdown</h2></div>
+    <div class="panel-body">
       <div class="position-bars" id="position-bars"></div>
-      <div class="warning-strip" id="back-warning" hidden></div>
     </div>
-  </div>
+  </section>
 
-  <div class="section" id="insomnia-section" hidden>
-    <div class="section-title"><span class="dot" style="background:var(--insomnia)"></span> Insomnia Detection</div>
-    <div class="event-card" style="padding:20px">
+  <section class="panel section" id="insomnia-section" hidden>
+    <div class="panel-head"><h2 class="panel-title">Insomnia indicators</h2></div>
+    <div class="panel-body">
       <div class="risk-meter">
         <div style="display:flex;align-items:baseline;gap:8px">
           <span class="stat-value color-insomnia" id="insomnia-score">0</span>
-          <span class="stat-unit">/100</span>
+          <span class="stat-unit">/ 100 risk score</span>
           <span class="quality-badge" id="insomnia-level">low</span>
         </div>
         <div class="risk-track"><div class="risk-fill" id="risk-fill" style="width:0%"></div></div>
         <div class="risk-label"><span>Low</span><span>Moderate</span><span>High</span></div>
       </div>
-      <div class="stats" style="margin-top:0">
+      <div class="stats">
         <div class="stat-card">
-          <span class="stat-label">Restless Ratio</span>
+          <span class="stat-label">Restless ratio</span>
           <span class="stat-value" id="ins-ratio">0<small>%</small></span>
         </div>
         <div class="stat-card">
-          <span class="stat-label">Longest Streak</span>
+          <span class="stat-label">Longest streak</span>
           <span class="stat-value" id="ins-streak">0<small> min</small></span>
         </div>
         <div class="stat-card">
@@ -588,62 +798,64 @@
       <div id="insomnia-ep-list" style="margin-top:12px"></div>
       <div class="warning-strip" id="insomnia-warning" hidden></div>
     </div>
-  </div>
+  </section>
 </div>
 
 <!-- ==================== HISTORY TAB ==================== -->
 <div class="tab-panel" id="panel-history">
-  <div class="section" style="margin-top:16px">
-    <div class="section-title">Session History</div>
-    <div class="event-card">
-      <div style="overflow-x:auto">
-        <table class="history-table" id="history-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Duration</th>
-              <th>Quality</th>
-              <th>Snoring</th>
-              <th>Talking</th>
-              <th>Back %</th>
-              <th>Insomnia</th>
-            </tr>
-          </thead>
-          <tbody id="history-rows"></tbody>
-        </table>
-      </div>
+  <div class="page-head">
+    <div>
+      <h1>History</h1>
+      <div class="meta">Completed real sessions, newest first. Download a PDF report for any session.</div>
+    </div>
+  </div>
+  <div class="event-card">
+    <div style="overflow-x:auto">
+      <table class="history-table" id="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Duration</th>
+            <th>Quality</th>
+            <th>Snoring</th>
+            <th>Talking</th>
+            <th>Insomnia</th>
+            <th>Report</th>
+          </tr>
+        </thead>
+        <tbody id="history-rows"></tbody>
+      </table>
     </div>
   </div>
 
   <div class="section" id="history-trends">
-    <div class="section-title">Trends</div>
+    <h2 class="section-title">Change since previous session</h2>
     <div class="stats" id="trend-tiles"></div>
   </div>
 </div>
 
 <div class="footer">
-  <span>Circular Buffer</span><span class="pipe">&middot;</span>
-  <span>Sliding Window</span><span class="pipe">&middot;</span>
-  <span>Priority Queue</span><span class="pipe">&middot;</span>
-  <span>Hash Map</span><span class="pipe">&middot;</span>
-  <span>Linked List</span><span class="pipe">&middot;</span>
-  <span>Peak Finding</span><span class="pipe">&middot;</span>
-  <span>State Machine</span><span class="pipe">&middot;</span>
-  <span>Sound Classifier (ZCR)</span><span class="pipe">&middot;</span>
-  <span>Insomnia Detector (RLE)</span>
+  Processing pipeline: circular buffer, sliding window, priority queue, hash map, linked list,
+  peak finding, state machine, sound classifier (ZCR), insomnia detector (RLE).
 </div>
+</main>
 
 <script>
 (function() {
   // ========== TAB SWITCHING ==========
   var tabs = document.querySelectorAll('.tab');
+  function activateTab(tab) {
+    for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+    tab.classList.add('active');
+    var panels = document.querySelectorAll('.tab-panel');
+    for (var j = 0; j < panels.length; j++) panels[j].classList.remove('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'live') drawLiveChart();
+  }
   for (var i = 0; i < tabs.length; i++) {
-    tabs[i].addEventListener('click', function() {
-      for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
-      this.classList.add('active');
-      var panels = document.querySelectorAll('.tab-panel');
-      for (var j = 0; j < panels.length; j++) panels[j].classList.remove('active');
-      document.getElementById('panel-' + this.dataset.tab).classList.add('active');
+    tabs[i].addEventListener('click', function() { activateTab(this); });
+    tabs[i].addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateTab(this); }
     });
   }
 
@@ -658,65 +870,246 @@
     var sec = Math.floor(s % 60);
     return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
   }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function(c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function isNum(v) { return typeof v === 'number' && isFinite(v); }
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  function withAlpha(color, a) {
+    var m = /^#([0-9a-f]{6})$/i.exec(color);
+    if (!m) return color;
+    var n = parseInt(m[1], 16);
+    return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')';
+  }
+  function stamp() {
+    var d = new Date();
+    function p(n) { return String(n).padStart(2, '0'); }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + '_' + p(d.getHours()) + p(d.getMinutes());
+  }
+  function downloadBlob(filename, blob) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+  }
+  function downloadText(filename, mime, text) {
+    downloadBlob(filename, new Blob([text], { type: mime }));
+  }
+  function csvCell(v) {
+    if (v === null || v === undefined) return '';
+    var s = String(v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
 
   // ========== LIVE TAB ==========
   var liveConnected = false;
   var logEntries = [];
-  var maxLogEntries = 50;
+  var maxLogEntries = 80;
+  var lastActionSeq = 0;
+  var lastReadingSeq = 0;
+
+  // Live graph samples, one per poll while data is fresh (capped for long nights)
+  var samples = [];
+  var maxSamples = 36000;
+  var t0 = null;
+  var chartRange = 300;
+
+  var CLASS_TONES = {
+    'SNORING': 'var(--snore)',
+    'SLEEP TALKING': 'var(--talk)',
+    'NOISE': 'var(--restless)',
+    'NO SIGNIFICANT SOUND': 'var(--fg)'
+  };
+  var SOURCE_LABELS = { esp32: 'ESP32 · Wi-Fi', serial: 'ESP32 · USB serial', none: 'No device' };
+
+  // Event log category from the server's action text
+  var LOG_TAGS = [
+    [/classif/i, 'Classified', 't-class'],
+    [/vibration motor/i, 'Vibration', 't-vibe'],
+    [/insomnia/i, 'Insomnia', 't-insomnia'],
+    [/sleep talking/i, 'Talking', 't-talk'],
+    [/snoring/i, 'Snoring', 't-snore'],
+    [/restless/i, 'Restless', 't-restless'],
+    [/position/i, 'Position', 't-position']
+  ];
+  function tagFor(text) {
+    for (var i = 0; i < LOG_TAGS.length; i++) if (LOG_TAGS[i][0].test(text)) return LOG_TAGS[i];
+    return [null, 'Event', ''];
+  }
+  function cleanText(text) {
+    return String(text)
+      .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}]️?\s*/gu, '')
+      .replace(/^Position:\s*/, '')
+      .trim();
+  }
+
+  var lastStatus = '';
+  function setStatus(cls, text) {
+    if (cls + text === lastStatus) return;
+    lastStatus = cls + text;
+    var st = document.getElementById('live-status');
+    st.className = 'live-status' + (cls ? ' ' + cls : '');
+    st.textContent = text;
+  }
 
   function pollLive() {
-    fetch('/api/live')
+    fetch('/api/live?since=' + lastActionSeq + '&since_reading=' + lastReadingSeq)
       .then(function(r) { return r.json(); })
       .then(function(d) {
-        if (!liveConnected) {
-          liveConnected = true;
-          document.getElementById('live-status').innerHTML =
-            '<span class="live-dot"></span> Recording — sensors active';
-        }
-        var r = d.reading || {};
-        document.getElementById('live-sound').textContent =
-          r.sound !== undefined ? r.sound.toFixed(1) : '--';
-        document.getElementById('live-movement').textContent =
-          r.accel_magnitude !== undefined ? r.accel_magnitude.toFixed(2) : '--';
-        document.getElementById('live-pressure').textContent =
-          r.pressure !== undefined ? Math.round(r.pressure) : '--';
-        document.getElementById('live-position').textContent =
-          (d.position || '--').replace('_', ' ');
-        document.getElementById('live-time').textContent =
-          fmtTime(d.timestamp || 0) + ' elapsed';
+        // server restarted: its sequence numbers start again from 0
+        if (isNum(d.reading_seq) && d.reading_seq < lastReadingSeq) { lastReadingSeq = 0; t0 = null; samples = []; }
+        if (isNum(d.action_seq) && d.action_seq < lastActionSeq) lastActionSeq = 0;
 
+        var age = d.last_update_age;
+        // Only a reading that arrived in the last few seconds counts as live
+        var connected = d.connected !== undefined ? !!d.connected : (isNum(age) && age <= 5);
+        var r = connected ? (d.reading || {}) : {};
+
+        liveConnected = true;
+        updateSaveState(d);
+        if (connected) setStatus('', 'Recording');
+        else if (isNum(age)) setStatus('offline', 'ESP32 disconnected · no data for ' + Math.round(age) + ' s');
+        else setStatus('stale', 'Waiting for ESP32');
+        document.getElementById('live-source').textContent =
+          (SOURCE_LABELS[d.source] || d.source || '--') +
+          (connected && isNum(age) ? ' · ' + age.toFixed(1) + ' s ago' : '');
+
+        // --- Sound state: live detection vs last completed classification ---
+        var liveSound = connected ? String(r.live_sound || 'QUIET').toUpperCase() : '--';
+        var soundOn = liveSound === 'SOUND DETECTED';
+        document.getElementById('live-sound-state').className = 'state-pill ' + (soundOn ? 'on' : 'off');
+        document.getElementById('live-sound-state-text').textContent = liveSound;
+
+        var soundEvent = connected ? String(r.sound_event || 'NO SIGNIFICANT SOUND').toUpperCase() : '--';
+        var evEl = document.getElementById('live-sound-event');
+        evEl.textContent = soundEvent;
+        evEl.style.color = CLASS_TONES[soundEvent] || 'var(--fg)';
+
+        // Checkboxes follow the ESP32's classification text exactly
+        var snoring = soundEvent === 'SNORING';
+        var talking = soundEvent === 'SLEEP TALKING';
+        document.getElementById('flag-snoring').className = 'flag' + (snoring ? ' on-snore' : '');
+        document.getElementById('flag-talking').className = 'flag' + (talking ? ' on-talk' : '');
+
+        var remaining = isNum(r.classification_seconds_remaining) ? r.classification_seconds_remaining : null;
+        document.getElementById('live-countdown').innerHTML = remaining === null
+          ? '--' : Math.max(0, Math.round(remaining)) + '<span class="u">s</span>';
+        document.getElementById('live-countdown-bar').style.width = remaining === null
+          ? '0%' : (Math.min(60, Math.max(0, 60 - remaining)) / 60 * 100) + '%';
+
+        var soundEvents = isNum(r.sound_events) ? r.sound_events : null;
+        document.getElementById('live-sound-events').textContent =
+          'Sound events this window: ' + (soundEvents === null ? '--' : soundEvents);
+
+        var vib = !!r.vibration;
+        document.getElementById('live-vibration').className = 'state-pill ' + (vib ? 'on' : 'off');
+        document.getElementById('live-vibration-text').textContent =
+          !connected ? '--' : vib ? 'Vibration ON' : 'Vibration OFF';
+
+        // --- Sensor readouts ---
         var soundEl = document.getElementById('live-sound');
-        if (r.sound > 60) soundEl.style.color = 'var(--snore)';
-        else soundEl.style.color = 'var(--fg-muted)';
+        soundEl.textContent = isNum(r.sound) ? r.sound.toFixed(1) : '--';
+        soundEl.style.color = r.sound > 60 ? 'var(--snore)' : '';
 
         var moveEl = document.getElementById('live-movement');
-        if (r.accel_magnitude > 4) moveEl.style.color = 'var(--restless)';
-        else moveEl.style.color = 'var(--fg-muted)';
+        var displayRoll = isNum(r.roll) ? (Math.abs(r.roll) <= 3 ? 0 : r.roll) : null;
+        moveEl.textContent = displayRoll !== null ? displayRoll.toFixed(1) : '--';
+        moveEl.style.color = displayRoll !== null && Math.abs(displayRoll) > 30 ? 'var(--restless)' : '';
 
-        if (d.actions && d.actions.length > 0) {
-          var logDiv = document.getElementById('live-log');
-          for (var i = 0; i < d.actions.length; i++) {
-            logEntries.unshift({
-              time: fmtTime(d.timestamp),
-              text: d.actions[i]
-            });
+        var tilt = 'Roll & Pitch';
+        if (isNum(r.roll) || isNum(r.pitch)) {
+          tilt = 'Roll ' + (isNum(r.roll) ? r.roll.toFixed(1) + '°' : '--') +
+                 '  ·  Pitch ' + (isNum(r.pitch) ? r.pitch.toFixed(1) + '°' : '--');
+        }
+        document.getElementById('live-tilt').textContent = tilt;
+
+        var weight = isNum(r.weight_g) ? r.weight_g : null;
+        document.getElementById('live-pressure').textContent =
+          weight !== null ? weight.toFixed(1) : isNum(r.pressure) ? r.pressure.toFixed(1) : '--';
+        document.getElementById('live-pressure-unit').textContent = weight !== null || !isNum(r.pressure) ? 'g' : 'raw';
+        document.getElementById('live-pressure-sub').textContent =
+          isNum(r.pressure) ? 'Pressure ' + r.pressure.toFixed(1) : 'HX711 load cell';
+
+        // raw ESP32 position text, exactly as in the Serial Monitor
+        var pos = r.position || '--';
+        document.getElementById('live-position').textContent = String(pos).replace(/_/g, ' ').toUpperCase();
+        document.getElementById('live-time').textContent = fmtTime(d.timestamp || 0) + ' elapsed';
+
+        // --- Live graph: one sample per real ESP32 reading, timed by when the server received it ---
+        var readings = d.readings || [];
+        for (var i = 0; i < readings.length; i++) {
+          var s = readings[i];
+          if (!isNum(s.seq) || s.seq <= lastReadingSeq) continue;
+          lastReadingSeq = s.seq;
+          if (!isNum(s.sound)) continue;
+          var wall = s.received_at * 1000;
+          if (t0 === null) t0 = wall;
+          var sEvent = String(s.sound_event || '').toUpperCase();
+          samples.push({
+            t: (wall - t0) / 1000,
+            wall: wall,
+            sound: s.sound,
+            accel: isNum(s.roll) ? (Math.abs(s.roll) <= 3 ? 0 : s.roll) : null,
+            weight: isNum(s.weight_g) ? s.weight_g : (isNum(s.pressure) ? s.pressure : null),
+            pressure: isNum(s.pressure) ? s.pressure : null,
+            roll: isNum(s.roll) ? s.roll : null,
+            pitch: isNum(s.pitch) ? s.pitch : null,
+            position: s.position,
+            live_sound: String(s.live_sound || '').toUpperCase(),
+            sound_event: sEvent,
+            snoring: sEvent === 'SNORING',
+            sleep_talking: sEvent === 'SLEEP TALKING',
+            remaining: isNum(s.classification_seconds_remaining) ? s.classification_seconds_remaining : null,
+            sound_events: isNum(s.sound_events) ? s.sound_events : null,
+            vibration: !!s.vibration,
+            source: s.source || ''
+          });
+          if (samples.length > maxSamples) samples.shift();
+        }
+        if (readings.length) drawLiveChart();
+
+        // --- Event log: sequence-numbered entries, falls back to plain actions ---
+        var newEntries = [];
+        if (d.recent_actions) {
+          for (var i = 0; i < d.recent_actions.length; i++) {
+            var a = d.recent_actions[i];
+            if (a.seq > lastActionSeq) {
+              newEntries.push({ time: fmtTime(a.timestamp), text: a.text });
+              lastActionSeq = a.seq;
+            }
           }
+        } else if (d.actions) {
+          for (var i = 0; i < d.actions.length; i++) {
+            newEntries.push({ time: fmtTime(d.timestamp), text: d.actions[i] });
+          }
+        }
+        if (newEntries.length > 0) {
+          for (var i = 0; i < newEntries.length; i++) logEntries.unshift(newEntries[i]);
           if (logEntries.length > maxLogEntries) logEntries.length = maxLogEntries;
 
           var html = '';
           for (var i = 0; i < logEntries.length; i++) {
-            html += '<div class="log-entry"><span class="log-time">' +
-              logEntries[i].time + '</span>' + logEntries[i].text + '</div>';
+            var tag = tagFor(logEntries[i].text);
+            html += '<div class="log-entry"><span class="log-time">' + logEntries[i].time + '</span>' +
+              '<span class="log-tag ' + tag[2] + '">' + tag[1] + '</span>' +
+              '<span class="log-text">' + esc(cleanText(logEntries[i].text)) + '</span></div>';
           }
-          logDiv.innerHTML = html;
+          document.getElementById('live-log').innerHTML = html;
         }
       })
       .catch(function() {
         if (liveConnected) {
           liveConnected = false;
-          var st = document.getElementById('live-status');
-          st.className = 'live-status offline';
-          st.innerHTML = 'Offline — server not running';
+          setStatus('offline', 'Server offline');
+          document.getElementById('live-source').textContent = '--';
         }
       });
   }
@@ -724,15 +1117,227 @@
   setInterval(pollLive, 1000);
   pollLive();
 
-  // ========== SESSION REPORT TAB ==========
-  fetch('dashboard_data.json')
-    .then(function(r) { return r.json(); })
-    .then(function(data) { renderReport(data); })
-    .catch(function() {
-      document.getElementById('stat-tiles').innerHTML =
-        '<div class="stat-card"><span class="stat-label">No Session Data</span>' +
-        '<span class="stat-unit">Run a session first to see the report.</span></div>';
+  // ========== LIVE GRAPH ==========
+  function visibleSamples(range) {
+    if (!samples.length || !range) return samples;
+    var tMax = samples[samples.length - 1].t;
+    var lo = 0;
+    while (lo < samples.length && samples[lo].t < tMax - range) lo++;
+    return samples.slice(lo);
+  }
+
+  // Three stacked lanes (sound, movement, weight) on a shared time axis.
+  function renderChart(ctx, W, H, data, range, opts) {
+    opts = opts || {};
+    var C = {
+      bg: cssVar('--bg-card'), fg: cssVar('--fg'), muted: cssVar('--fg-muted'), border: cssVar('--border'),
+      sound: cssVar('--accent'), move: cssVar('--restless'), weight: cssVar('--position'),
+      detect: cssVar('--accent'), vibe: cssVar('--insomnia')
+    };
+    var sans = '"IBM Plex Sans", system-ui, sans-serif';
+    var mono = '"IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    var top = 12;
+    if (opts.title) {
+      ctx.fillStyle = C.fg;
+      ctx.font = '600 17px ' + sans;
+      ctx.fillText(opts.title, 24, 32);
+      ctx.fillStyle = C.muted;
+      ctx.font = '12px ' + mono;
+      ctx.fillText(opts.subtitle || '', 24, 52);
+      top = 70;
+    }
+
+    var padL = 60, padR = 16, padB = 30, gap = 18;
+    var plotW = W - padL - padR;
+    var laneH = (H - top - padB - gap * 2) / 3;
+    if (!data.length || plotW <= 0 || laneH <= 0) return;
+
+    var tEnd = data[data.length - 1].t;
+    var tStart = range ? Math.max(0, tEnd - range) : data[0].t;
+    if (tEnd - tStart < 10) tStart = Math.max(0, tEnd - 10);
+    var span = Math.max(1, tEnd - tStart);
+    function X(t) { return padL + ((t - tStart) / span) * plotW; }
+
+    var lanes = [
+      { key: 'sound', label: 'Sound', unit: 'dB', color: C.sound, dp: 1 },
+      { key: 'accel', label: 'Left / Right', unit: '°', color: C.move, dp: 1 },
+      { key: 'weight', label: 'Weight', unit: 'g', color: C.weight, dp: 1 }
+    ];
+
+    // Vibration periods, shaded across all lanes
+    var bandTop = top, bandBot = top + laneH * 3 + gap * 2;
+    ctx.fillStyle = withAlpha(C.vibe, 0.12);
+    for (var i = 0; i < data.length; i++) {
+      if (!data[i].vibration) continue;
+      var x1 = X(data[i].t);
+      var x2 = i + 1 < data.length ? X(data[i + 1].t) : x1 + 2;
+      ctx.fillRect(x1, bandTop, Math.max(1.5, x2 - x1), bandBot - bandTop);
+    }
+
+    for (var li = 0; li < lanes.length; li++) {
+      var lane = lanes[li];
+      var y0 = top + li * (laneH + gap);
+      var vals = [];
+      for (var i = 0; i < data.length; i++) if (isNum(data[i][lane.key])) vals.push(data[i][lane.key]);
+
+      var vMin = vals.length ? Math.min.apply(null, vals) : 0;
+      var vMax = vals.length ? Math.max.apply(null, vals) : 1;
+      if (vMax - vMin < 1e-6) { vMin -= 1; vMax += 1; }
+      var pad = (vMax - vMin) * 0.15;
+      vMin -= pad; vMax += pad;
+      function Y(v) { return y0 + laneH - ((v - vMin) / (vMax - vMin)) * laneH; }
+
+      // gridlines + y labels
+      ctx.font = '12px ' + mono;
+      ctx.textAlign = 'right';
+      ctx.lineWidth = 1;
+      for (var g = 0; g <= 2; g++) {
+        var gv = vMin + (vMax - vMin) * (g / 2);
+        var gy = Math.round(Y(gv)) + 0.5;
+        ctx.strokeStyle = C.border;
+        ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(padL + plotW, gy); ctx.stroke();
+        ctx.fillStyle = C.muted;
+        // keep the min/max labels inside their own lane so lanes never collide
+        ctx.fillText(gv.toFixed(lane.dp), padL - 8, g === 0 ? gy - 2 : g === 2 ? gy + 9 : gy + 3.5);
+      }
+
+      // sound-detected marks under the sound trace
+      if (lane.key === 'sound') {
+        ctx.fillStyle = withAlpha(C.detect, 0.45);
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].live_sound === 'SOUND DETECTED') ctx.fillRect(X(data[i].t) - 1, y0 + laneH - 5, 2, 5);
+        }
+      }
+
+      // trace
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(padL, y0, plotW, laneH);
+      ctx.clip();
+      var started = false, prevT = null;
+      ctx.beginPath();
+      for (var i = 0; i < data.length; i++) {
+        var v = data[i][lane.key];
+        if (!isNum(v)) continue;
+        var px = X(data[i].t), py = Y(v);
+        // break the trace where the ESP32 sent nothing (disconnected), never bridge the gap
+        if (!started || data[i].t - prevT > 5) { ctx.moveTo(px, py); started = true; }
+        else ctx.lineTo(px, py);
+        prevT = data[i].t;
+      }
+      if (started) {
+        ctx.strokeStyle = lane.color;
+        ctx.lineWidth = 1.5;
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // lane caption: name + latest value
+      var latest = vals.length ? vals[vals.length - 1] : null;
+      ctx.textAlign = 'left';
+      ctx.font = '500 13px ' + sans;
+      ctx.fillStyle = withAlpha(C.bg, 0.85);
+      ctx.fillRect(padL + 2, y0 + 2, 150, 19);
+      ctx.fillStyle = C.muted;
+      ctx.fillText(lane.label, padL + 8, y0 + 16);
+      if (latest !== null) {
+        var lw = ctx.measureText(lane.label).width;
+        ctx.font = '500 13px ' + mono;
+        ctx.fillStyle = lane.color;
+        ctx.fillText(latest.toFixed(lane.dp) + ' ' + lane.unit, padL + 14 + lw, y0 + 16);
+      }
+    }
+
+    // x axis (elapsed mm:ss)
+    ctx.fillStyle = C.muted;
+    ctx.font = '12px ' + mono;
+    ctx.textAlign = 'center';
+    var steps = [10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600];
+    var step = steps[steps.length - 1];
+    for (var s = 0; s < steps.length; s++) if (span / steps[s] <= 6) { step = steps[s]; break; }
+    for (var tt = Math.ceil(tStart / step) * step; tt <= tEnd; tt += step) {
+      ctx.fillText(fmtTime(tt), X(tt), H - 9);
+    }
+    ctx.textAlign = 'left';
+  }
+
+  function drawLiveChart() {
+    var canvas = document.getElementById('live-chart');
+    if (!canvas || !canvas.offsetParent) return;
+    var w = canvas.clientWidth, h = canvas.clientHeight;
+    var dpr = window.devicePixelRatio || 1;
+    if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+    }
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    renderChart(ctx, w, h, visibleSamples(chartRange), chartRange);
+    document.getElementById('live-chart-empty').hidden = samples.length > 0;
+  }
+  window.addEventListener('resize', drawLiveChart);
+
+  var rangeBtns = document.querySelectorAll('#chart-range button');
+  for (var i = 0; i < rangeBtns.length; i++) {
+    rangeBtns[i].addEventListener('click', function() {
+      for (var j = 0; j < rangeBtns.length; j++) rangeBtns[j].classList.remove('active');
+      this.classList.add('active');
+      chartRange = parseInt(this.dataset.range, 10);
+      drawLiveChart();
     });
+  }
+
+  document.getElementById('btn-chart-png').addEventListener('click', function() {
+    if (!samples.length) { alert('No live samples recorded yet.'); return; }
+    var W = 1600, H = 900, scale = 2;
+    var c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    var ctx = c.getContext('2d');
+    ctx.scale(scale, scale);
+    var data = visibleSamples(chartRange);
+    var rangeLabel = chartRange ? 'last ' + (chartRange / 60) + ' min' : 'full session';
+    renderChart(ctx, W / scale, H / scale, data, chartRange, {
+      title: 'Sleep Guardian — sensor trends',
+      subtitle: new Date().toLocaleString() + '  ·  ' + rangeLabel + '  ·  ' + data.length + ' samples'
+    });
+    c.toBlob(function(blob) { downloadBlob('sleep-guardian-live-' + stamp() + '.png', blob); }, 'image/png');
+  });
+
+  document.getElementById('btn-chart-csv').addEventListener('click', function() {
+    if (!samples.length) { alert('No live samples recorded yet.'); return; }
+    var head = ['elapsed_s', 'time', 'sound_db', 'accel_magnitude_g', 'weight_g', 'pressure', 'roll', 'pitch',
+                'position', 'live_sound', 'sound_event', 'snoring', 'sleep_talking',
+                'classification_seconds_remaining', 'sound_events', 'vibration', 'source'];
+    var lines = [head.join(',')];
+    for (var i = 0; i < samples.length; i++) {
+      var s = samples[i];
+      lines.push([s.t.toFixed(1), new Date(s.wall).toISOString(), s.sound, s.accel, s.weight, s.pressure,
+                  s.roll, s.pitch, s.position, s.live_sound, s.sound_event, s.snoring, s.sleep_talking,
+                  s.remaining, s.sound_events, s.vibration, s.source].map(csvCell).join(','));
+    }
+    downloadText('sleep-guardian-live-' + stamp() + '.csv', 'text/csv', lines.join('\n'));
+  });
+
+  // ========== SESSION REPORT TAB ==========
+  var reportData = null;
+
+  function loadReport() {
+    fetch('dashboard_data.json', { cache: 'no-store' })
+      .then(function(r) { if (!r.ok) throw new Error('none'); return r.json(); })
+      .then(function(data) { reportData = data; renderReport(data); })
+      .catch(function() {
+        reportData = null;
+        document.getElementById('report-meta').textContent = 'No completed sessions yet.';
+        document.getElementById('stat-tiles').innerHTML =
+          '<div class="stat-card"><span class="stat-label">No completed sessions yet.</span>' +
+          '<span class="stat-unit">Record a real session with the ESP32, then press "Stop &amp; save session" on the Live monitor.</span></div>';
+      });
+  }
+  loadReport();
 
   function renderReport(data) {
     var snoreEvents = data.snoring.events;
@@ -740,27 +1345,29 @@
     var pos = data.position;
 
     document.getElementById('session-date').textContent =
-      Math.round(data.duration_minutes) + ' min session';
+      'Last session ' + Math.round(data.duration_minutes) + ' min';
+    document.getElementById('report-meta').textContent =
+      Math.round(data.duration_minutes) + ' min recorded · ' + (data.total_events || 0) + ' logged events · sleep quality ' + (data.sleep_quality || 'N/A');
     var badge = document.getElementById('quality-badge');
     badge.hidden = false;
     var q = (data.sleep_quality || 'N/A').toLowerCase();
     badge.textContent = data.sleep_quality;
     badge.className = 'quality-badge quality-' + (q === 'good' ? 'good' : q === 'fair' ? 'fair' : 'poor');
 
-    var backPct = pos.back_sleep_percentage || 0;
+    var restless = data.restlessness_percentage || 0;
     document.getElementById('stat-tiles').innerHTML =
-      '<div class="stat-card"><span class="stat-label">Snoring Events</span>' +
+      '<div class="stat-card"><span class="stat-label">Snoring events</span>' +
       '<span class="stat-value color-snore">' + data.snoring.total_events + '</span>' +
       '<span class="stat-unit">' + data.snoring.total_duration_minutes + ' min total</span></div>' +
-      '<div class="stat-card"><span class="stat-label">Sleep Talking</span>' +
+      '<div class="stat-card"><span class="stat-label">Sleep talking</span>' +
       '<span class="stat-value color-talk">' + data.sleep_talking.total_events + '</span>' +
       '<span class="stat-unit">' + data.sleep_talking.total_duration_minutes + ' min total</span></div>' +
-      '<div class="stat-card"><span class="stat-label">Position Changes</span>' +
-      '<span class="stat-value color-accent">' + pos.total_transitions + '</span>' +
-      '<span class="stat-unit">' + (pos.total_transitions > 30 ? 'high movement' : 'normal') + '</span></div>' +
-      '<div class="stat-card"><span class="stat-label">Back Sleep</span>' +
-      '<span class="stat-value color-restless">' + backPct + '<small>%</small></span>' +
-      '<span class="stat-unit">' + (backPct > 30 ? 'snoring risk' : 'low risk') + '</span></div>';
+      '<div class="stat-card"><span class="stat-label">Position changes</span>' +
+      '<span class="stat-value">' + pos.total_transitions + '</span>' +
+      '<span class="stat-unit">' + (pos.total_transitions > 30 ? 'High movement' : 'Normal') + '</span></div>' +
+      '<div class="stat-card"><span class="stat-label">Restlessness</span>' +
+      '<span class="stat-value color-restless">' + restless + '<small>%</small></span>' +
+      '<span class="stat-unit">' + (restless > 30 ? 'Restless sleep' : 'Calm sleep') + '</span></div>';
 
     document.getElementById('snore-total').textContent =
       data.snoring.total_events + ' events · ' + data.snoring.total_duration_minutes + ' min';
@@ -769,33 +1376,33 @@
 
     var totalDur = Math.max(600, data.duration_minutes * 60);
     var totalMin = Math.ceil(totalDur / 60);
-    var W = 820, H = 100, padL = 36, padR = 10, padT = 12, padB = 24;
+    var W = 820, H = 100, padL = 40, padR = 10, padT = 10, padB = 24;
     var chartW = W - padL - padR, chartH = H - padT - padB;
     function x(s) { return padL + (s / totalDur) * chartW; }
 
-    var cs = getComputedStyle(document.documentElement);
-    var snoreColor = cs.getPropertyValue('--snore').trim();
-    var talkColor = cs.getPropertyValue('--talk').trim();
-    var mutedColor = cs.getPropertyValue('--fg-muted').trim();
-    var borderColor = cs.getPropertyValue('--border').trim();
+    var snoreColor = cssVar('--snore');
+    var talkColor = cssVar('--talk');
+    var mutedColor = cssVar('--fg-muted');
+    var borderColor = cssVar('--border');
 
     var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">';
-    for (var m = 0; m <= totalMin; m += 2) {
+    var tickStep = totalMin > 120 ? 30 : totalMin > 40 ? 10 : 2;
+    for (var m = 0; m <= totalMin; m += tickStep) {
       var xp = x(m * 60);
-      svg += '<line x1="' + xp + '" y1="' + padT + '" x2="' + xp + '" y2="' + (padT + chartH) + '" stroke="' + borderColor + '" stroke-width="0.5"/>';
-      svg += '<text x="' + xp + '" y="' + (H - 4) + '" text-anchor="middle" fill="' + mutedColor + '" font-size="9" font-family="DM Mono,monospace">' + m + 'm</text>';
+      svg += '<line x1="' + xp + '" y1="' + padT + '" x2="' + xp + '" y2="' + (padT + chartH) + '" stroke="' + borderColor + '" stroke-width="0.6"/>';
+      svg += '<text x="' + xp + '" y="' + (H - 6) + '" text-anchor="middle" fill="' + mutedColor + '" font-size="9" font-family="IBM Plex Mono,monospace">' + m + 'm</text>';
     }
     var sY = padT + 4, sH = (chartH - 16) / 2;
-    svg += '<text x="' + (padL - 4) + '" y="' + (sY + sH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8" font-family="DM Sans,sans-serif">Snore</text>';
+    svg += '<text x="' + (padL - 6) + '" y="' + (sY + sH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8.5" font-family="IBM Plex Sans,sans-serif">Snore</text>';
     for (var i = 0; i < snoreEvents.length; i++) {
       var e = snoreEvents[i];
-      svg += '<rect x="' + x(e.start) + '" y="' + sY + '" width="' + Math.max(2, x(e.end) - x(e.start)) + '" height="' + sH + '" rx="2" fill="' + snoreColor + '" opacity="0.75"/>';
+      svg += '<rect x="' + x(e.start) + '" y="' + sY + '" width="' + Math.max(1.5, x(e.end) - x(e.start)) + '" height="' + sH + '" rx="1" fill="' + snoreColor + '" opacity="0.8"/>';
     }
     var tY = sY + sH + 8, tH = sH;
-    svg += '<text x="' + (padL - 4) + '" y="' + (tY + tH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8" font-family="DM Sans,sans-serif">Talk</text>';
+    svg += '<text x="' + (padL - 6) + '" y="' + (tY + tH / 2 + 3) + '" text-anchor="end" fill="' + mutedColor + '" font-size="8.5" font-family="IBM Plex Sans,sans-serif">Talk</text>';
     for (var i = 0; i < talkEvents.length; i++) {
       var e = talkEvents[i];
-      svg += '<rect x="' + x(e.start) + '" y="' + tY + '" width="' + Math.max(2, x(e.end) - x(e.start)) + '" height="' + tH + '" rx="2" fill="' + talkColor + '" opacity="0.75"/>';
+      svg += '<rect x="' + x(e.start) + '" y="' + tY + '" width="' + Math.max(1.5, x(e.end) - x(e.start)) + '" height="' + tH + '" rx="1" fill="' + talkColor + '" opacity="0.8"/>';
     }
     svg += '</svg>';
     document.getElementById('timeline-container').innerHTML = svg;
@@ -804,28 +1411,32 @@
     var maxSnoreDur = 1;
     for (var i = 0; i < snoreEvents.length; i++) if (snoreEvents[i].duration > maxSnoreDur) maxSnoreDur = snoreEvents[i].duration;
     var showCount = Math.min(12, snoreEvents.length);
+    var rowsHtml = '';
     for (var i = 0; i < showCount; i++) {
       var e = snoreEvents[i];
       var barW = Math.round((e.duration / maxSnoreDur) * 60);
-      snoreBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td><td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--snore)"></span></td></tr>';
+      rowsHtml += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td><td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--snore)"></span></td></tr>';
     }
-    if (snoreEvents.length > 12) snoreBody.innerHTML += '<tr><td colspan="2" style="color:var(--fg-muted);font-style:italic">+ ' + (snoreEvents.length - 12) + ' more</td></tr>';
+    if (snoreEvents.length > 12) rowsHtml += '<tr><td colspan="2" style="color:var(--fg-muted)">+ ' + (snoreEvents.length - 12) + ' more (see CSV export)</td></tr>';
+    snoreBody.innerHTML = rowsHtml;
 
     var talkBody = document.getElementById('talk-rows');
     var maxTalkDur = 1;
     for (var i = 0; i < talkEvents.length; i++) if (talkEvents[i].duration > maxTalkDur) maxTalkDur = talkEvents[i].duration;
+    rowsHtml = '';
     for (var i = 0; i < talkEvents.length; i++) {
       var e = talkEvents[i];
       var barW = Math.round((e.duration / maxTalkDur) * 60);
-      talkBody.innerHTML += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td><td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--talk)"></span></td></tr>';
+      rowsHtml += '<tr><td>' + fmtTimestamp(e.start) + ' – ' + fmtTimestamp(e.end) + '</td><td>' + e.duration + 's <span class="dur-bar" style="width:' + barW + 'px;background:var(--talk)"></span></td></tr>';
     }
+    talkBody.innerHTML = rowsHtml;
 
     var posContainer = document.getElementById('position-bars');
     var breakdown = pos.breakdown || {};
     var positions = [
       { key: 'back', label: 'Back', cls: 'back-fill' },
-      { key: 'side_left', label: 'Side Left', cls: 'side-fill' },
-      { key: 'side_right', label: 'Side Right', cls: 'side-fill' },
+      { key: 'side_left', label: 'Left side', cls: 'side-fill' },
+      { key: 'side_right', label: 'Right side', cls: 'side-fill' },
       { key: 'stomach', label: 'Stomach', cls: 'stomach-fill' }
     ];
     var html = '';
@@ -835,12 +1446,6 @@
       html += '<div class="pos-row"><span class="pos-label">' + p.label + '</span><div class="pos-track"><div class="pos-fill ' + p.cls + '" style="width:' + pct + '%"></div></div><span class="pos-pct">' + pct + '%</span></div>';
     }
     posContainer.innerHTML = html;
-
-    if (backPct > 30) {
-      var warn = document.getElementById('back-warning');
-      warn.hidden = false;
-      warn.textContent = 'Back sleeping made up ' + backPct + '% of the session — primary risk factor for snoring.';
-    }
 
     if (data.insomnia && data.insomnia.score !== undefined) {
       var ins = data.insomnia;
@@ -859,37 +1464,114 @@
       var epHtml = '';
       for (var i = 0; i < episodes.length; i++) {
         var ep = episodes[i];
-        epHtml += '<div class="insomnia-ep"><div class="ep-badge">' + (i + 1) + '</div><div class="ep-details"><div class="ep-time">' + fmtTime(ep.start_seconds) + ' – ' + fmtTime(ep.end_seconds) + '</div><div class="ep-dur">' + ep.duration_minutes + ' min · intensity ' + ep.avg_intensity + '</div></div></div>';
+        epHtml += '<div class="insomnia-ep"><div class="ep-badge">#' + (i + 1) + '</div><div class="ep-details"><div class="ep-time">' + fmtTime(ep.start_seconds) + ' – ' + fmtTime(ep.end_seconds) + '</div><div class="ep-dur">' + ep.duration_minutes + ' min · intensity ' + ep.avg_intensity + '</div></div></div>';
       }
       epList.innerHTML = epHtml;
       if (ins.level === 'high' || ins.level === 'moderate') {
         var iw = document.getElementById('insomnia-warning');
         iw.hidden = false;
-        iw.style.background = 'color-mix(in srgb, var(--insomnia) 10%, transparent)';
-        iw.style.color = 'var(--insomnia)';
-        iw.style.borderColor = 'color-mix(in srgb, var(--insomnia) 20%, transparent)';
+        iw.style.borderLeftColor = 'var(--insomnia)';
         iw.textContent = ins.level === 'high'
-          ? 'High insomnia risk — prolonged restless periods suggest difficulty falling or staying asleep.'
-          : 'Moderate insomnia indicators — some extended restless periods detected.';
+          ? 'High insomnia risk. Prolonged restless periods suggest difficulty falling or staying asleep.'
+          : 'Moderate insomnia indicators. Some extended restless periods were detected.';
       }
     }
   }
 
+  // ========== REPORT EXPORTS ==========
+  function requireReport() {
+    if (!reportData) { alert('No completed sessions yet.'); return false; }
+    return true;
+  }
+
+  document.getElementById('btn-report-json').addEventListener('click', function() {
+    if (!requireReport()) return;
+    var out = JSON.parse(JSON.stringify(reportData));
+    if (out.position) delete out.position.back_sleep_percentage;
+    downloadText('sleep-guardian-report-' + stamp() + '.json', 'application/json', JSON.stringify(out, null, 2));
+  });
+
+  document.getElementById('btn-report-csv').addEventListener('click', function() {
+    if (!requireReport()) return;
+    var d = reportData, pos = d.position || {}, ins = d.insomnia || {}, f = ins.factors || {};
+    var rows = [['section', 'metric', 'value']];
+    rows.push(['summary', 'sleep_quality', d.sleep_quality]);
+    rows.push(['summary', 'duration_minutes', d.duration_minutes]);
+    rows.push(['summary', 'total_events', d.total_events]);
+    rows.push(['summary', 'restlessness_percentage', d.restlessness_percentage]);
+    rows.push(['snoring', 'total_events', d.snoring.total_events]);
+    rows.push(['snoring', 'total_duration_minutes', d.snoring.total_duration_minutes]);
+    rows.push(['sleep_talking', 'total_events', d.sleep_talking.total_events]);
+    rows.push(['sleep_talking', 'total_duration_minutes', d.sleep_talking.total_duration_minutes]);
+    rows.push(['position', 'total_transitions', pos.total_transitions]);
+    rows.push(['insomnia', 'score', ins.score]);
+    rows.push(['insomnia', 'level', ins.level]);
+    rows.push(['insomnia', 'restless_ratio', f.restless_ratio]);
+    rows.push(['insomnia', 'longest_streak_minutes', f.longest_streak_minutes]);
+    rows.push([]);
+    rows.push(['event_type', 'start_s', 'end_s', 'start', 'end', 'duration_s']);
+    function addEvents(type, list) {
+      for (var i = 0; i < (list || []).length; i++) {
+        var e = list[i];
+        rows.push([type, e.start, e.end, fmtTimestamp(e.start), fmtTimestamp(e.end), e.duration]);
+      }
+    }
+    addEvents('snoring', d.snoring.events);
+    addEvents('sleep_talking', d.sleep_talking.events);
+    var eps = ins.episodes || [];
+    for (var i = 0; i < eps.length; i++) {
+      rows.push(['insomnia_episode', eps[i].start_seconds, eps[i].end_seconds,
+                 fmtTimestamp(eps[i].start_seconds), fmtTimestamp(eps[i].end_seconds),
+                 Math.round(eps[i].duration_minutes * 60)]);
+    }
+    var csv = rows.map(function(r) { return r.map(csvCell).join(','); }).join('\n');
+    downloadText('sleep-guardian-report-' + stamp() + '.csv', 'text/csv', csv);
+  });
+
+  document.getElementById('btn-report-pdf').addEventListener('click', function() {
+    if (!requireReport()) return;
+    activateTab(document.querySelector('.tab[data-tab="report"]'));
+    setTimeout(function() { window.print(); }, 50);
+  });
+
+  document.getElementById('btn-timeline-png').addEventListener('click', function() {
+    var svgEl = document.querySelector('#timeline-container svg');
+    if (!svgEl) { alert('No timeline to export yet.'); return; }
+    var vb = svgEl.viewBox.baseVal, scale = 2;
+    var src = new XMLSerializer().serializeToString(svgEl);
+    var img = new Image();
+    var url = URL.createObjectURL(new Blob([src], { type: 'image/svg+xml' }));
+    img.onload = function() {
+      var c = document.createElement('canvas');
+      c.width = vb.width * scale; c.height = vb.height * scale;
+      var ctx = c.getContext('2d');
+      ctx.fillStyle = cssVar('--bg-card');
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(function(blob) { downloadBlob('sleep-guardian-timeline-' + stamp() + '.png', blob); }, 'image/png');
+    };
+    img.src = url;
+  });
+
   // ========== HISTORY TAB ==========
-  fetch('session_history.json')
-    .then(function(r) { return r.json(); })
-    .then(function(history) { renderHistory(history); })
-    .catch(function() {
-      document.getElementById('history-rows').innerHTML =
-        '<tr><td colspan="7" style="text-align:center;color:var(--fg-muted);padding:20px">No session history yet.</td></tr>';
-    });
+  function historyMessage(text) {
+    document.getElementById('history-rows').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;color:var(--fg-muted);padding:24px">' + text + '</td></tr>';
+    document.getElementById('trend-tiles').innerHTML = '';
+    document.getElementById('history-trends').hidden = true;
+  }
+
+  function loadHistory() {
+    fetch('session_history.json', { cache: 'no-store' })
+      .then(function(r) { return r.json(); })
+      .then(function(history) { renderHistory(Array.isArray(history) ? history : []); })
+      .catch(function() { historyMessage('No completed sessions yet.'); });
+  }
+  loadHistory();
 
   function renderHistory(history) {
-    var rows = document.getElementById('history-rows');
-    if (!history.length) {
-      rows.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--fg-muted);padding:20px">No sessions recorded yet.</td></tr>';
-      return;
-    }
+    if (!history.length) { historyMessage('No completed sessions yet.'); return; }
 
     var html = '';
     for (var i = history.length - 1; i >= 0; i--) {
@@ -898,44 +1580,101 @@
       qClass = qClass === 'good' ? 'good' : qClass === 'fair' ? 'fair' : 'poor';
       var insLevel = s.insomnia ? s.insomnia.level : 'low';
       var insClass = insLevel === 'high' ? 'poor' : insLevel === 'moderate' ? 'fair' : 'good';
+      var report = s.session_id !== undefined
+        ? '<a class="btn btn-sm" href="/api/history/' + encodeURIComponent(s.session_id) + '/report" download>' +
+          '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg>Download</a>'
+        : '<span style="color:var(--fg-muted)">--</span>';
 
       html += '<tr>' +
-        '<td style="font-weight:600">' + s.date + '</td>' +
-        '<td><span style="font-family:DM Mono,monospace">' + Math.round(s.duration_minutes) + '</span> min</td>' +
-        '<td><span class="quality-badge quality-' + qClass + '">' + (s.sleep_quality || 'N/A') + '</span></td>' +
-        '<td><span class="color-snore" style="font-weight:600">' + (s.snoring ? s.snoring.total_events : 0) + '</span> <span style="color:var(--fg-muted);font-size:0.72rem">(' + (s.snoring ? s.snoring.total_duration_minutes : 0) + ' min)</span></td>' +
-        '<td><span class="color-talk" style="font-weight:600">' + (s.sleep_talking ? s.sleep_talking.total_events : 0) + '</span></td>' +
-        '<td><span style="font-family:DM Mono,monospace">' + (s.position ? s.position.back_sleep_percentage : 0) + '%</span></td>' +
+        '<td style="font-family:var(--mono)">' + esc(s.date || '--') + '</td>' +
+        '<td><span style="font-family:var(--mono)">' + Math.round(s.duration_minutes || 0) + '</span> min</td>' +
+        '<td><span class="quality-badge quality-' + qClass + '">' + esc(s.sleep_quality || 'N/A') + '</span></td>' +
+        '<td><span class="color-snore" style="font-family:var(--mono)">' + (s.snoring ? s.snoring.total_events : 0) + '</span> <span style="color:var(--fg-muted);font-size:13px">(' + (s.snoring ? s.snoring.total_duration_minutes : 0) + ' min)</span></td>' +
+        '<td><span class="color-talk" style="font-family:var(--mono)">' + (s.sleep_talking ? s.sleep_talking.total_events : 0) + '</span></td>' +
         '<td><span class="quality-badge quality-' + insClass + '">' + (s.insomnia ? s.insomnia.score + '/100' : '--') + '</span></td>' +
+        '<td>' + report + '</td>' +
         '</tr>';
     }
-    rows.innerHTML = html;
+    document.getElementById('history-rows').innerHTML = html;
 
     // Trend tiles
+    var trends = document.getElementById('history-trends');
+    trends.hidden = history.length < 2;
     if (history.length >= 2) {
       var latest = history[history.length - 1];
       var prev = history[history.length - 2];
 
       var snoreDiff = (latest.snoring ? latest.snoring.total_events : 0) - (prev.snoring ? prev.snoring.total_events : 0);
-      var backDiff = ((latest.position ? latest.position.back_sleep_percentage : 0) - (prev.position ? prev.position.back_sleep_percentage : 0)).toFixed(1);
+      var restDiff = Math.round(((latest.restlessness_percentage || 0) - (prev.restlessness_percentage || 0)) * 10) / 10;
       var insDiff = (latest.insomnia ? latest.insomnia.score : 0) - (prev.insomnia ? prev.insomnia.score : 0);
       var durDiff = Math.round((latest.duration_minutes || 0) - (prev.duration_minutes || 0));
 
       function trendArrow(val, invert) {
-        if (val === 0) return '<span class="trend-same">— same</span>';
+        if (val === 0) return '<span class="trend-same">No change</span>';
         var good = invert ? val < 0 : val > 0;
         var cls = good ? 'trend-down' : 'trend-up';
-        var arrow = val > 0 ? '↑' : '↓';
+        var arrow = val > 0 ? '▲' : '▼';
         return '<span class="' + cls + '">' + arrow + ' ' + Math.abs(val) + '</span>';
       }
 
       document.getElementById('trend-tiles').innerHTML =
-        '<div class="stat-card"><span class="stat-label">Snoring vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(snoreDiff, true) + '</span><span class="stat-unit">events</span></div>' +
-        '<div class="stat-card"><span class="stat-label">Back Sleep vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(parseFloat(backDiff), true) + '</span><span class="stat-unit">percentage points</span></div>' +
-        '<div class="stat-card"><span class="stat-label">Insomnia vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(insDiff, true) + '</span><span class="stat-unit">risk score</span></div>' +
-        '<div class="stat-card"><span class="stat-label">Duration vs Last</span><span class="stat-value" style="font-size:1.2rem">' + trendArrow(durDiff, false) + '</span><span class="stat-unit">minutes</span></div>';
+        '<div class="stat-card"><span class="stat-label">Snoring events</span><span class="stat-value" style="font-size:21px">' + trendArrow(snoreDiff, true) + '</span><span class="stat-unit">vs previous session</span></div>' +
+        '<div class="stat-card"><span class="stat-label">Restlessness</span><span class="stat-value" style="font-size:21px">' + trendArrow(restDiff, true) + '</span><span class="stat-unit">percentage points</span></div>' +
+        '<div class="stat-card"><span class="stat-label">Insomnia risk</span><span class="stat-value" style="font-size:21px">' + trendArrow(insDiff, true) + '</span><span class="stat-unit">score points</span></div>' +
+        '<div class="stat-card"><span class="stat-label">Duration</span><span class="stat-value" style="font-size:21px">' + trendArrow(durDiff, false) + '</span><span class="stat-unit">minutes</span></div>';
     }
   }
+
+  // ========== STOP & SAVE SESSION ==========
+  var saveBtn = document.getElementById('btn-stop-session');
+  var saveStatus = document.getElementById('save-status');
+  var saving = false;
+  var savedMessage = '';
+
+  function updateSaveState(d) {
+    if (saving) return;
+    if (savedMessage || d.session_saved) {
+      saveBtn.disabled = true;
+      saveStatus.className = 'save-status ok';
+      saveStatus.textContent = savedMessage || 'Session saved. Restart the server to record a new session.';
+      return;
+    }
+    var reason = d.save_blocked_reason;
+    saveBtn.disabled = !!reason;
+    saveBtn.title = reason || 'End this session and save it to History';
+    saveStatus.className = 'save-status';
+    saveStatus.textContent = reason || '';
+  }
+
+  saveBtn.addEventListener('click', function() {
+    if (!confirm('Stop recording and save this session to History?')) return;
+    saving = true;
+    saveBtn.disabled = true;
+    saveStatus.className = 'save-status';
+    saveStatus.textContent = 'Saving…';
+    fetch('/api/stop', { method: 'POST' })
+      .then(function(r) { return r.json().then(function(body) { return { ok: r.ok, body: body }; }); })
+      .then(function(res) {
+        saving = false;
+        if (!res.ok) {
+          saveStatus.className = 'save-status err';
+          saveStatus.textContent = res.body.message || 'Could not save the session.';
+          return;
+        }
+        var s = res.body.session || {};
+        savedMessage = 'Saved as session #' + s.session_id + ' (' + Math.round(s.duration_minutes || 0) + ' min). Report is in History.';
+        saveStatus.className = 'save-status ok';
+        saveStatus.textContent = savedMessage;
+        loadReport();
+        loadHistory();
+      })
+      .catch(function() {
+        saving = false;
+        saveBtn.disabled = false;
+        saveStatus.className = 'save-status err';
+        saveStatus.textContent = 'Server not reachable. The session was not saved.';
+      });
+  });
 })();
 </script>
 </body>
