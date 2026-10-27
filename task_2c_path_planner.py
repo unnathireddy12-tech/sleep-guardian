@@ -529,33 +529,89 @@ def plan_all(blocked, starts, raw_blocked=None):
     (0.0, *starts[robot]) to exactly GOALS[robot], with no collisions; or None."""
     ##############  ADD YOUR CODE HERE  ##############
 
+    print("=" * 60)
+    print("[plan_all] VERSION 3 — wall re-blocking active")
+    print("=" * 60)
+
     # Force-clear starts and goals in the planning grid
     all_points = list(starts.values()) + list(GOALS.values())
     for pt in all_points:
         ci, cj = to_cell(pt)
         for di in range(-3, 4):
             for dj in range(-3, 4):
-                ni, nj = ci + di, cj + dj
-                if 0 <= ni < blocked.shape[0] and 0 <= nj < blocked.shape[1]:
-                    blocked[ni, nj] = False
+                ni_idx, nj_idx = ci + di, cj + dj
+                if 0 <= ni_idx < blocked.shape[0] and 0 <= nj_idx < blocked.shape[1]:
+                    blocked[ni_idx, nj_idx] = False
 
-    # --- Gap detection using raw planning grid (reliable) ---
-    gap_info = None
+    # --- Gap detection + wall re-blocking ---
     gap_waypoint = None
 
     if raw_blocked is not None:
-        gap_info = _detect_gap_in_raw(raw_blocked)
+        n_i, n_j = raw_blocked.shape
+        j_lo = max(3, int(0.9 / PLAN_CELL))
+        j_hi = min(n_j - 3, int(1.9 / PLAN_CELL))
 
-    if gap_info is not None:
-        gap_i, wall_j_lo, wall_j_hi = gap_info
-        _clear_gap_corridor(blocked, gap_i, wall_j_lo, wall_j_hi)
-        wall_j_mid = (wall_j_lo + wall_j_hi) // 2
-        gap_waypoint = to_world((gap_i, wall_j_mid))
-        print(f"[plan_all] gap waypoint: "
-              f"({gap_waypoint[0]:.3f}, {gap_waypoint[1]:.3f})")
+        # Find wall rows (y positions with significant blocking in raw grid)
+        wall_js = []
+        for j in range(j_lo, j_hi + 1):
+            frac = np.mean(raw_blocked[:, j])
+            if frac > 0.25:
+                wall_js.append(j)
+
+        if len(wall_js) >= 2:
+            # Pick largest contiguous group of wall rows
+            groups, current = [], [wall_js[0]]
+            for j in wall_js[1:]:
+                if j <= current[-1] + 2:
+                    current.append(j)
+                else:
+                    groups.append(current)
+                    current = [j]
+            groups.append(current)
+            wall_band = max(groups, key=len)
+
+            print(f"[wall] band j={wall_band[0]}..{wall_band[-1]} "
+                  f"(y={(wall_band[0]+0.5)*PLAN_CELL:.2f}"
+                  f"..{(wall_band[-1]+0.5)*PLAN_CELL:.2f}m)")
+
+            # *** KEY FIX: Re-block the wall band in routing grid ***
+            # remove_drivable clears colored circles, which can create
+            # false gaps in the wall. Copying raw_blocked's wall back
+            # seals those false gaps — only the REAL gap stays open.
+            ext_lo = max(0, wall_band[0] - 1)
+            ext_hi = min(n_j, wall_band[-1] + 2)
+            sealed = 0
+            for j in range(ext_lo, ext_hi):
+                before = int(np.sum(blocked[:, j]))
+                blocked[:, j] |= raw_blocked[:, j]
+                sealed += int(np.sum(blocked[:, j])) - before
+            print(f"[wall] re-blocked {sealed} cells in routing grid "
+                  f"(j={ext_lo}..{ext_hi - 1})")
+
+            # Detect gap: x position with LEAST blocking across wall band
+            wall_slice = raw_blocked[:, wall_band]
+            i_block = np.mean(wall_slice.astype(float), axis=1)
+            i_block[:4] = 1.0
+            i_block[-4:] = 1.0
+
+            gap_i = int(np.argmin(i_block))
+            gap_val = i_block[gap_i]
+            gap_x = (gap_i + 0.5) * PLAN_CELL
+            print(f"[gap] at i={gap_i} (x={gap_x:.3f}m), block={gap_val:.2f}")
+
+            # Clear corridor at the real gap
+            _clear_gap_corridor(blocked, gap_i, wall_band[0], wall_band[-1])
+
+            wall_j_mid = (wall_band[0] + wall_band[-1]) // 2
+            gap_waypoint = to_world((gap_i, wall_j_mid))
+            print(f"[plan_all] gap waypoint: "
+                  f"({gap_waypoint[0]:.3f}, {gap_waypoint[1]:.3f})")
+        else:
+            print("[wall] no wall band found — using fallback")
+            _widen_gap_fallback(blocked)
     else:
         _widen_gap_fallback(blocked)
-        print("[plan_all] fallback gap detection (no via-waypoint)")
+        print("[plan_all] fallback gap detection (no raw grid)")
 
     cv2.imwrite("/tmp/debug_planning_after_gap.png",
                 np.where(blocked.T, 0, 255).astype(np.uint8))
