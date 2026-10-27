@@ -213,7 +213,7 @@ def nearest_free(blocked, p, max_r=0.30):
     return min(free, key=lambda q: math.dist(to_world(q), p)) if free else None
 
 
-# ── A* search and helpers ───────────────────────────────────────────────────
+# -- A* search and helpers ---------------------------------------------------
 
 def _astar(blocked, start, end):
     """A* on the planning grid. Returns list of (i, j) cells or None."""
@@ -283,7 +283,7 @@ def _shorten(blocked, path):
     return result
 
 
-# ── Gap detection on raw planning grid ──────────────────────────────────────
+# -- Gap detection on raw planning grid --------------------------------------
 
 def _detect_gap_in_raw(raw_blocked):
     """Detect the wall gap using the raw planning grid (before remove_drivable).
@@ -387,7 +387,7 @@ def _widen_gap_fallback(blocked):
                 blocked[i, j] = False
 
 
-# ── Timed plan construction ─────────────────────────────────────────────────
+# -- Timed plan construction -------------------------------------------------
 
 def _interp_pos(plan, t):
     """Interpolate position at time t from a timed plan [(t, x, y), ...]."""
@@ -484,7 +484,7 @@ def _make_timed_plan_via(blocked, start, via, goal):
     return plan
 
 
-# ── Multi-robot collision avoidance ─────────────────────────────────────────
+# -- Multi-robot collision avoidance -----------------------------------------
 
 def _find_safe_delay(base_plan, existing_plans, clearance):
     """Minimum delay (0.5s steps) so base_plan avoids all existing_plans."""
@@ -522,7 +522,7 @@ def _find_safe_delay(base_plan, existing_plans, clearance):
     return None
 
 
-# ── Main planning function ──────────────────────────────────────────────────
+# -- Main planning function --------------------------------------------------
 
 def plan_all(blocked, starts, raw_blocked=None):
     """starts {robot: (x, y)} -> {robot: [(t, x, y), ...]}, every robot from
@@ -659,10 +659,10 @@ class PathPlanner(Node):
                                    robots=list(self.pose.values()),
                                    goals=list(GOALS.values()))
 
-        # Planning grid from occupied — used for A* routing
+        # Planning grid from occupied --- used for A* routing
         blocked = planning_grid(occupied)
 
-        # Raw planning grid — used ONLY for gap detection
+        # Raw planning grid --- used ONLY for gap detection
         # Colored circles stay as obstacles here, and inflation closes
         # inter-pillar gaps, so only the real physical gap remains open
         raw_blocked = planning_grid(raw_grid)
